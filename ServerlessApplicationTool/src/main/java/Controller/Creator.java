@@ -1,0 +1,421 @@
+package Controller;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map.Entry;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import model.Arc;
+import model.DynamoDB;
+import model.Function;
+import model.Graph;
+import model.Node;
+import model.S3Bucket;
+import model.dbAccessmode;
+
+public class Creator {
+	public static void main(String[] args) {
+		String pathOfResourceFile = "C:\\Users\\Stefan\\aws-workspace-Paper\\ExampleForPaper\\serverless.template";
+		String[] pathesToSourceCodeOfFunctions = {
+				"C:\\Users\\Stefan\\aws-workspace-Paper\\ExampleForPaperAdapted\\src\\main\\java\\com\\serverless\\demo\\function\\HashFiles.java",
+				"C:\\Users\\Stefan\\aws-workspace-Paper\\ExampleForPaperAdapted\\src\\main\\java\\com\\serverless\\demo\\function\\InformClient.java",
+				"C:\\Users\\Stefan\\aws-workspace-Paper\\ExampleForPaperAdapted\\src\\main\\java\\com\\serverless\\demo\\function\\ProcessS3Zip.java" };
+		String pathToLogFile = "TODO";
+		Graph graph = new Graph();
+		createBasicModel(pathOfResourceFile, graph);
+		reduceMode(graph);
+		for (String code : pathesToSourceCodeOfFunctions) {
+			addRelationsFromSource(code, graph);
+		}
+		// TODO
+		addLogData(pathToLogFile);
+		System.out.println("Graph:" + System.lineSeparator());
+		graph.print();
+
+	}
+
+	private static void addLogData(String pathToLogFile) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private static void reduceMode(Graph graph) {
+
+		
+		
+		for (Node node : graph.getNodes()) {
+
+			//let functions point to next functions only!
+			if (node instanceof Function) {
+				List<Arc> outgoingArc = node.getOutgoingArcs();
+			}
+
+			
+		}
+		
+		//remove non-function nodes
+
+	}
+
+	private static void createBasicModel(String filePathStackFile, Graph graph) {
+		Path path = Paths.get(filePathStackFile);
+		if (Files.exists(path)) {
+			try {
+
+				byte[] jsonData = Files.readAllBytes(path);
+
+				// create ObjectMapper instance
+				ObjectMapper objectMapper = new ObjectMapper();
+
+				// read JSON like DOM Parser
+				JsonNode rootNode = objectMapper.readTree(jsonData);
+				JsonNode descriptionNode = rootNode.path("Description");
+				System.out.println("Description = " + descriptionNode.toString());
+
+				JsonNode resourcesNode = rootNode.path("Resources");
+				Iterator<Entry<String, JsonNode>> resources = resourcesNode.fields();
+
+				// Create nodes first
+				while (resources.hasNext()) {
+					Entry<String, JsonNode> resource = resources.next();
+					String nameOfNode = resource.getKey();
+					JsonNode resourceNode = resource.getValue();
+					JsonNode type = resourceNode.path("Type");
+					if (isServerlessFunction(type)) {
+						JsonNode properties = resourceNode.path("Properties");
+						Function lambda = new Function(nameOfNode);
+						setFunctionName(lambda, properties);
+						setFunctionHandler(lambda, properties);
+						setFunctionRuntime(lambda, properties);
+						setFunctionPolicies(lambda, properties);
+						graph.addNode(lambda);
+					} else if (isS3Instance(type)) {
+						S3Bucket s3 = new S3Bucket(nameOfNode);
+						JsonNode properties = resourceNode.path("Properties");
+						setBucketName(s3, properties);
+						graph.addNode(s3);
+					} else if (isDynamoDB(type)) {
+						DynamoDB dynamo = new DynamoDB(nameOfNode);
+						JsonNode properties = resourceNode.path("Properties");
+						setDynamoName(dynamo, properties);
+						graph.addNode(dynamo);
+					}
+				}
+
+				// Check for relations (e.g. triggers) saved in file)
+				resources = resourcesNode.fields();
+				while (resources.hasNext()) {
+					Entry<String, JsonNode> resource = resources.next();
+					String nameOfNode = resource.getKey();
+					JsonNode resourceNode = resource.getValue();
+					JsonNode type = resourceNode.path("Type");
+					if (isServerlessFunction(type)) {
+						JsonNode properties = resourceNode.path("Properties");
+						if (properties.has("Events")) {
+							JsonNode eventNode = properties.path("Events");
+							Iterator<JsonNode> eventIterator = eventNode.elements();
+							while (eventIterator.hasNext()) {
+								JsonNode event = eventIterator.next();
+								JsonNode typeNode = event.path("Type");
+								if (typeNode.asText().contains("S3")) {
+									JsonNode propertiesOfEvent = event.path("Properties");
+									JsonNode bucketOfEvent = propertiesOfEvent.path("Bucket");
+									JsonNode triggerDB = bucketOfEvent.path("Ref");
+									String nameOfTriggerDB = triggerDB.asText();
+									Node dbNode = graph.getNode(nameOfTriggerDB);
+									Node triggeredNode = graph.getNode(nameOfNode);
+									Arc arc = new Arc(dbNode, triggeredNode);
+									dbNode.addOutgoingArc(arc);
+								}
+							}
+						}
+					}
+				}
+			} catch (IOException e) {
+				System.err.println("File could not be read");
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private static void setDynamoName(DynamoDB dynamo, JsonNode properties) {
+		JsonNode node = properties.path("TableName");
+		dynamo.setTableName(node.toString().replaceAll("\"", "").trim());
+	}
+
+	private static void setBucketName(S3Bucket s3, JsonNode properties) {
+		JsonNode node = properties.path("BucketName");
+		s3.setBucketName(node.toString().replaceAll("\"", "").trim());
+	}
+
+	private static void setFunctionPolicies(Function lambda, JsonNode properties) {
+		JsonNode node = properties.path("Policies");
+		lambda.setPolicies(node.toString());
+
+	}
+
+	private static void setFunctionRuntime(Function lambda, JsonNode properties) {
+		JsonNode node = properties.path("Runtime");
+		lambda.setRuntime(node.toString().replaceAll("\"", "").trim());
+	}
+
+	private static void setFunctionHandler(Function lambda, JsonNode properties) {
+		JsonNode node = properties.path("Handler");
+		lambda.setHandler(node.toString().replaceAll("\"", "").trim());
+	}
+
+	private static void setFunctionName(Function lambda, JsonNode properties) {
+		JsonNode node = properties.path("FunctionName");
+		lambda.setFunctionName(node.toString().replaceAll("\"", "").trim());
+	}
+
+	private static boolean isDynamoDB(JsonNode type) {
+		return type.toString().contains("AWS::DynamoDB::Table");
+	}
+
+	private static boolean isS3Instance(JsonNode type) {
+		return type.toString().contains("AWS::S3::Bucket");
+	}
+
+	private static boolean isServerlessFunction(JsonNode type) {
+		return type.toString().contains("AWS::Serverless::Function");
+	}
+
+	private static void addRelationsFromSource(String filePath, Graph graph) {
+		Path path = Paths.get(filePath);
+		if (Files.exists(path)) {
+			List<String> allLines = new ArrayList<String>();
+			try {
+				allLines = Files.readAllLines(path);
+			} catch (IOException e) {
+				System.err.println("Source code file could not be reade");
+				e.printStackTrace();
+			}
+			String handlerName = getHandlerName(allLines);
+			lookForRelations(allLines, graph, handlerName);
+		}
+	}
+
+	private static List<Arc> lookForRelations(List<String> allLines, Graph graph, String handlerName) {
+
+		Function predecessor = graph.getFunctionByHandler(handlerName);
+
+		List<Arc> arcs = new LinkedList<Arc>();
+		HashMap<String, String> variables = new HashMap<String, String>();
+		int order = 1;
+		int depthOfCondition = 0;
+		for (String line : allLines) {
+			checkForVariables(variables, line);
+			// S3 read
+			if (line.contains("GetObjectRequest(")) {
+				String parameter = line.substring(line.lastIndexOf("GetObjectRequest(") + "GetObjectRequest(".length());
+				String dbName = parameter.split(",")[0].trim();
+				if (variables.containsKey(dbName)) {
+					dbName = variables.get(dbName);
+				}
+				S3Bucket successor = graph.getS3ByName(dbName);
+				Arc arcTmp = new Arc(predecessor, successor);
+				arcTmp.setAccessMode(dbAccessmode.READ);
+				if (depthOfCondition == 0) {
+					arcTmp.setCondition("");
+				}
+				arcTmp.setOrder(order);
+				if (arcs.size() > 0) {
+					Arc lastArc = arcs.get(arcs.size() - 1);
+					if (!lastArc.isSimilar(arcTmp)) {
+
+						if ((lastArc.getAccessMode() == dbAccessmode.WRITE
+								|| lastArc.getAccessMode() == dbAccessmode.READWRITE)
+								&& lastArc.getSuccessor() == successor) {
+							lastArc.setAccessMode(dbAccessmode.READWRITE);
+						} else {
+							arcs.add(arcTmp);
+							order++;
+							predecessor.addOutgoingArc(arcTmp);
+						}
+					}
+				} else {
+					arcs.add(arcTmp);
+					order++;
+					predecessor.addOutgoingArc(arcTmp);
+
+				}
+			}
+			// s3 write
+			if (line.contains("putObject(")) {
+				String parameter = line.substring(line.lastIndexOf("putObject(") + "putObject(".length());
+				String dbName = parameter.split(",")[0].trim();
+				if (variables.containsKey(dbName)) {
+					dbName = variables.get(dbName);
+				}
+				S3Bucket successor = graph.getS3ByName(dbName);
+				Arc arcTmp = new Arc(predecessor, successor);
+				arcTmp.setAccessMode(dbAccessmode.WRITE);
+				if (depthOfCondition == 0) {
+					arcTmp.setCondition("");
+				}
+				arcTmp.setOrder(order);
+
+				if (arcs.size() > 0) {
+					Arc lastArc = arcs.get(arcs.size() - 1);
+					if (!lastArc.isSimilar(arcTmp)) {
+						if ((lastArc.getAccessMode() == dbAccessmode.READ
+								|| lastArc.getAccessMode() == dbAccessmode.READWRITE)
+								&& lastArc.getSuccessor() == successor) {
+							lastArc.setAccessMode(dbAccessmode.READWRITE);
+						} else {
+							arcs.add(arcTmp);
+							order++;
+							predecessor.addOutgoingArc(arcTmp);
+						}
+					}
+
+				} else {
+					arcs.add(arcTmp);
+					order++;
+					predecessor.addOutgoingArc(arcTmp);
+
+				}
+			}
+			// dynamo write
+			if (line.contains("putItem(")) {
+				String dynamoDBTable = line.split("\\.")[0].trim();
+				String valueOfDynamo = variables.get(dynamoDBTable);
+				String dbname = valueOfDynamo.split("\\(")[1].replaceAll("\"", "").replaceAll(";", "")
+						.replaceAll("\\)", "").trim();
+				DynamoDB successor = graph.getDynamoDBbyName(dbname);
+				Arc arcTmp = new Arc(predecessor, successor);
+				arcTmp.setAccessMode(dbAccessmode.WRITE);
+				if (depthOfCondition == 0) {
+					arcTmp.setCondition("");
+				}
+				arcTmp.setOrder(order);
+
+				if (arcs.size() > 0) {
+					Arc lastArc = arcs.get(arcs.size() - 1);
+					if (!lastArc.isSimilar(arcTmp)) {
+						arcs.add(arcTmp);
+						order++;
+						predecessor.addOutgoingArc(arcTmp);
+					}
+				} else {
+					arcs.add(arcTmp);
+					order++;
+					predecessor.addOutgoingArc(arcTmp);
+
+				}
+
+			}
+
+			// dynamo read
+			if (line.contains("getItem(")) {
+				String dynamoDBTable = line.split("\\.")[0].split("=")[1].trim();
+				String varibleNameOfUsedObject = variables.get(dynamoDBTable);
+				String dbname = varibleNameOfUsedObject.split("\\(")[1].replaceAll("\"", "").replaceAll(";", "")
+						.replaceAll("\\)", "").trim();
+				DynamoDB successor = graph.getDynamoDBbyName(dbname);
+				Arc arcTmp = new Arc(predecessor, successor);
+				arcTmp.setAccessMode(dbAccessmode.READ);
+				if (depthOfCondition == 0) {
+					arcTmp.setCondition("");
+				}
+				arcTmp.setOrder(order);
+
+				if (arcs.size() > 0) {
+					Arc lastArc = arcs.get(arcs.size() - 1);
+					if (!lastArc.isSimilar(arcTmp)) {
+						arcs.add(arcTmp);
+						order++;
+						predecessor.addOutgoingArc(arcTmp);
+					}
+				} else {
+					arcs.add(arcTmp);
+					order++;
+					predecessor.addOutgoingArc(arcTmp);
+				}
+			}
+
+			// lambda invocation
+			if (line.contains("invoke(")) {
+				String parameter = line.substring(line.lastIndexOf("invoke(") + "invoke(".length());
+				String lambdaRequestName = parameter.split(",")[0].replaceAll("\\)", "").replaceAll(";", "").trim();
+				if (variables.containsKey(lambdaRequestName)) {
+					lambdaRequestName = variables.get(lambdaRequestName);
+				}
+				String functionName = lambdaRequestName
+						.substring(lambdaRequestName.lastIndexOf("withFunctionName(") + "withFunctionName(".length())
+						.split("\\)")[0];
+				Function successor = graph.getFunctionByName(functionName);
+				Arc arcTmp = new Arc(predecessor, successor);
+				if (depthOfCondition == 0) {
+					arcTmp.setCondition("");
+				}
+				arcTmp.setOrder(order);
+				if (lambdaRequestName.contains("RequestResponse")) {
+					arcTmp.setSynchronizedCall(true);
+				}
+				if (arcs.size() > 0) {
+					Arc lastArc = arcs.get(arcs.size() - 1);
+					if (!lastArc.isSimilar(arcTmp)) {
+						arcs.add(arcTmp);
+						order++;
+						predecessor.addOutgoingArc(arcTmp);
+					}
+				} else {
+					arcs.add(arcTmp);
+					order++;
+					predecessor.addOutgoingArc(arcTmp);
+
+				}
+			}
+
+		}
+		return arcs;
+	}
+
+	private static void checkForVariables(HashMap<String, String> variables, String line) {
+		if (line.contains("=")) {
+			String[] splittedLine = line.split("=");
+			String[] splittedLeftPart = splittedLine[0].split(" ");
+
+			if (splittedLeftPart.length > 0) {
+				String key = "";
+				if (splittedLeftPart.length == 1) {
+					key = splittedLeftPart[0].replaceAll(" ", "").trim();
+				} else {
+					key = splittedLeftPart[splittedLeftPart.length - 1].replaceAll(" ", "").trim();
+				}
+
+				String value = splittedLine[1].replaceAll(";", "").replaceAll(" ", "").replaceAll("\"", "").trim();
+				addKeyWithValue(variables, key, value);
+			}
+		}
+	}
+
+	private static void addKeyWithValue(HashMap<String, String> variables, String key, String value) {
+		if (variables.containsKey(value)) {
+			variables.put(key, variables.get(value));
+		} else {
+			variables.put(key, value);
+		}
+	}
+
+	private static String getHandlerName(List<String> allLines) {
+		for (String line : allLines) {
+			if (line.contains("public class")) {
+				return line.split(" ")[2];
+			}
+		}
+		return "";
+	}
+
+}
