@@ -29,40 +29,60 @@ public class Creator {
 				"C:\\Users\\Stefan\\aws-workspace-Paper\\ExampleForPaperAdapted\\src\\main\\java\\com\\serverless\\demo\\function\\HashFiles.java",
 				"C:\\Users\\Stefan\\aws-workspace-Paper\\ExampleForPaperAdapted\\src\\main\\java\\com\\serverless\\demo\\function\\InformClient.java",
 				"C:\\Users\\Stefan\\aws-workspace-Paper\\ExampleForPaperAdapted\\src\\main\\java\\com\\serverless\\demo\\function\\ProcessS3Zip.java" };
-		String pathToLogFile = "TODO";
+		String[] pathToLogFile = { "logData\\ProcessS3ZipFunction" };
 		Graph graph = new Graph();
 		createBasicModel(pathOfResourceFile, graph);
-		reduceMode(graph);
+
 		for (String code : pathesToSourceCodeOfFunctions) {
 			addRelationsFromSource(code, graph);
 		}
-		// TODO
-		addLogData(pathToLogFile);
+		reduceMode(graph);
+		addLogData(pathToLogFile, graph);
+
 		System.out.println("Graph:" + System.lineSeparator());
 		graph.print();
 
 	}
 
-	private static void addLogData(String pathToLogFile) {
-		// TODO Auto-generated method stub
+	private static void addLogData(String[] logFiles, Graph graph) {
+
+		for (String fileName : logFiles) {
+			Path path = Paths.get(fileName);
+			System.out.println("Here: " + path.getFileName());
+			Function function = graph.getFunctionByName(path.getFileName().toString());
+			if (function != null) {
+				try {
+					List<String> allLogs = Files.readAllLines(path);
+					function.addLog(allLogs);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+			}
+		}
 
 	}
 
 	private static void reduceMode(Graph graph) {
-
-		
-		
+		List<Node> nodes = new LinkedList<Node>();
 		for (Node node : graph.getNodes()) {
 
-			//let functions point to next functions only!
 			if (node instanceof Function) {
 				List<Arc> outgoingArc = node.getOutgoingArcs();
-			}
+				List<Arc> updatedOutgoingArcs = new LinkedList<Arc>();
 
-			
+				for (Arc arc : outgoingArc) {
+					Node successor = arc.getSuccessor();
+					if (successor instanceof Function) {
+						Arc updatedArc = new Arc(node, successor);
+						updatedOutgoingArcs.add(updatedArc);
+					}
+				}
+				node.setOutgoingArcs(updatedOutgoingArcs);
+				nodes.add(node);
+			}
+			graph.setNodes(nodes);
 		}
-		
-		//remove non-function nodes
 
 	}
 

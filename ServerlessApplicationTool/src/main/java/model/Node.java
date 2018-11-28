@@ -5,8 +5,7 @@ import java.util.List;
 
 public class Node {
 	private String name;
-	private List<Arc> outgoingArcs = new LinkedList<Arc>();;
-	private Setting settings;
+	private List<Arc> outgoingArcs = new LinkedList<Arc>();
 
 	public String getName() {
 		return name;
@@ -28,13 +27,7 @@ public class Node {
 		this.outgoingArcs = outgoingArcs;
 	}
 
-	public Setting getSettings() {
-		return settings;
-	}
-
-	public void setSettings(Setting settings) {
-		this.settings = settings;
-	}
+	
 
 	@Override
 	public String toString() {

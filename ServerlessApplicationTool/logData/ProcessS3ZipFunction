@@ -1,0 +1,12 @@
+2018-11-28T07:40:18.544Z START RequestId: d9d1c7aa-f2e0-11e8-9699-87acd08825ea Version: $LATEST
+
+2018-11-28T07:40:25.900Z Read
+
+2018-11-28T07:40:26.520Z Successfully transferred file my-object-storage-for-the-paper/00007065.jpg and uploaded to my-object-storage-for-the-paper/00007065.jpg.zip
+
+2018-11-28T07:40:26.644Z {"path":"00007065.jpg"}
+
+2018-11-28T07:40:35.952Z END RequestId: d9d1c7aa-f2e0-11e8-9699-87acd08825ea
+
+2018-11-28T07:40:35.952Z REPORT RequestId: d9d1c7aa-f2e0-11e8-9699-87acd08825ea	Duration: 17408.40 ms	Billed Duration: 17500 ms 	Memory Size: 512 MB	Max Memory Used: 108 MB	
+

@@ -1,11 +1,14 @@
 package model;
 
+import java.util.List;
+
 public class Function extends Node {
 
 	private String runtime;
 	private String handler;
 	private String policies;
 	private String functionName;
+	private List<String> logs;
 
 	public Function(String nameOfNode) {
 		this.setName(nameOfNode);
@@ -51,6 +54,14 @@ public class Function extends Node {
 		result += "Runtime: " + this.runtime + System.lineSeparator();
 		result += "Policies: " + this.policies + System.lineSeparator();
 		return result;
+	}
+
+	public void addLog(List<String> logs) {
+		if (this.logs == null) {
+			this.logs = logs;
+		} else {
+			this.logs.addAll(logs);
+		}
 	}
 
 }
