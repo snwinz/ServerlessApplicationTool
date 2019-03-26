@@ -24,19 +24,19 @@ import model.dbAccessmode;
 
 public class Creator {
 	public static void main(String[] args) {
-		String pathOfResourceFile = "C:\\Users\\Stefan\\aws-workspace-Paper\\ExampleForPaper\\serverless.template";
+		String pathOfResourceFile = "../ExampleForPaper/serverless.template";
 		String[] pathesToSourceCodeOfFunctions = {
-				"C:\\Users\\Stefan\\aws-workspace-Paper\\ExampleForPaperAdapted\\src\\main\\java\\com\\serverless\\demo\\function\\HashFiles.java",
-				"C:\\Users\\Stefan\\aws-workspace-Paper\\ExampleForPaperAdapted\\src\\main\\java\\com\\serverless\\demo\\function\\InformClient.java",
-				"C:\\Users\\Stefan\\aws-workspace-Paper\\ExampleForPaperAdapted\\src\\main\\java\\com\\serverless\\demo\\function\\ProcessS3Zip.java" };
-		String[] pathToLogFile = { "logData\\ProcessS3ZipFunction" };
+				"../ExampleForPaperAdapted/src/main/java/com/serverless/demo/function/HashFiles.java",
+				"../ExampleForPaperAdapted/src/main/java/com/serverless/demo/function/InformClient.java",
+				"../ExampleForPaperAdapted/src/main/java/com/serverless/demo/function/ProcessS3Zip.java" };
+		String[] pathToLogFile = { "logData/ProcessS3ZipFunction" };
 		Graph graph = new Graph();
 		createBasicModel(pathOfResourceFile, graph);
 
 		for (String code : pathesToSourceCodeOfFunctions) {
 			addRelationsFromSource(code, graph);
 		}
-		reduceMode(graph);
+		//reduceMode(graph);
 		addLogData(pathToLogFile, graph);
 
 		System.out.println("Graph:" + System.lineSeparator());
