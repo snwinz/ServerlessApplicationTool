@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml" id="AnchorPane" prefHeight="400"
+            prefWidth="999"
+            fx:controller="gui.controller.MainViewController">
+    <BorderPane VBox.vgrow="ALWAYS">
+        <bottom>
+            <ScrollPane VBox.vgrow="ALWAYS">
+                <TextArea
+                        fx:id="textArea"/>
+            </ScrollPane>
+        </bottom>
+        <left>
+            <HBox layoutX="120.0" layoutY="34.0" prefHeight="100.0" prefWidth="365.0">
+                <Button layoutX="10" layoutY="10"
+                        text="Create Graph of existing Project"
+                        onAction="#handleButtonAction" />
+
+                <Button layoutX="10" layoutY="10"
+                        text="Import existing graph"
+                        onAction="#importGraphButtonAction" />
+                <Button layoutX="10" layoutY="10"
+                        text="Create New Graph"
+                        onAction="#createNewGraph" />
+            </HBox>
+
+        </left>
+
+    </BorderPane>
+
+</AnchorPane>

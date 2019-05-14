@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml" id="AnchorPane" prefHeight="800"
+            prefWidth="1000"
+            fx:controller="gui.controller.ProjectSelectionController">
+    <Text layoutX="24.0" layoutY="40.0"
+          text="Path to CloudFormation file"/>
+    <TextField layoutX="24.0" layoutY="50.0" prefHeight="25.0"
+               prefWidth="405.0" fx:id="cloudFormationPath"/>
+    <Button layoutX="441.0" layoutY="50.0"
+            onAction="#chooseCloudFormationFile" text="..."/>
+    <Text layoutX="24.0" layoutY="90.0"
+          text="Path to Folder with serverless functions"/>
+    <TextField layoutX="24.0" layoutY="100.0" prefHeight="25.0"
+               prefWidth="405.0" fx:id="serverlessFunctionsDirectoryPath"/>
+    <Button layoutX="441.0" layoutY="100.0"
+            onAction="#chooseServerlessFunctions" text="..."/>
+    <Text layoutX="24.0" layoutY="140.0"
+          text="Path to folder with log files"/>
+    <TextField layoutX="24.0" layoutY="150.0" prefHeight="25.0"
+               prefWidth="405.0" fx:id="logDirectoryPath"/>
+    <Button layoutX="441.0" layoutY="150.0"
+            onAction="#chooseLogDirectory" text="..."/>
+
+
+    <Button layoutX="405.0" layoutY="400.0" onAction="#createModel"
+            text="Create Model"/>
+</AnchorPane>

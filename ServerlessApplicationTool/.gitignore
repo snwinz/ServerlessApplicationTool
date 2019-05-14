@@ -11,3 +11,5 @@
 # Maven
 log/
 target/
+
+settings.xml
