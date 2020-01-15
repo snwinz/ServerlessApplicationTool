@@ -1,6 +1,7 @@
 package gui.controller;
 
 import gui.view.GraphVisualisationView;
+import gui.view.InstrumentationSelectionView;
 import gui.view.MainView;
 import gui.view.ProjectSelectionView;
 import javafx.event.ActionEvent;
@@ -26,7 +27,7 @@ public class MainViewController {
     private ScrollPane scrollPane;
     private ApplicationModel model;
 
-    public void handleButtonAction(ActionEvent event) {
+    public void createProjectSelectionWindow(ActionEvent event) {
         try {
             createProjectSelectionWindow();
         } catch (IOException e) {
@@ -37,6 +38,11 @@ public class MainViewController {
 
     private void createProjectSelectionWindow() throws IOException {
         ProjectSelectionView view = new ProjectSelectionView(model);
+        view.show();
+    }
+
+    private void createInstrumentationWindow() throws IOException {
+        InstrumentationSelectionView view = new InstrumentationSelectionView();
         view.show();
     }
 
@@ -57,7 +63,6 @@ public class MainViewController {
         File file = fileChooser.showOpenDialog(view.getStage());
         if (file != null) {
             model.loadGraph(file.getPath());
-
         }
     }
 
@@ -67,7 +72,6 @@ public class MainViewController {
             GraphVisualisationDTO graphV = (GraphVisualisationDTO) graphObject;
             textArea.setText(graphV.getGraph().toString());
             createNewGraphVisualisation(graphV);
-
         } else {
             textArea.setText("Passed object was not a graph!");
         }
@@ -88,6 +92,19 @@ public class MainViewController {
         Graph graph = new Graph();
         GraphVisualisationDTO graphDTO = new GraphVisualisationDTO(graph);
         createNewGraphVisualisation(graphDTO);
+    }
 
+
+    public void createInstrumentationWindow(ActionEvent actionEvent) {
+        try {
+            createInstrumentationWindow();
+        } catch (IOException e) {
+
+            System.err.println("Instrumentation selection window cannot be created.");
+        }
+    }
+
+    public void createLogWindow(ActionEvent actionEvent) {
+        System.out.println("TODO2");
     }
 }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml" id="AnchorPane" prefHeight="800"
+            prefWidth="1000"
+            fx:controller="gui.controller.InstrumentationSelectionController">
+    <TextField layoutX="24.0" layoutY="150.0" prefHeight="25.0"
+               prefWidth="405.0" fx:id="sourceCodeDirectoryPath"/>
+    <Button layoutX="441.0" layoutY="150.0"
+            onAction="#chooseSourceCodeDirectory" text="..."/>
+    <Button layoutX="405.0" layoutY="400.0" onAction="#instrumentCode"
+            text="Create Model"/>
+</AnchorPane>

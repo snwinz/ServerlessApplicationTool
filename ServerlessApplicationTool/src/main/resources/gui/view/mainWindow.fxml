@@ -6,28 +6,32 @@
             prefWidth="999"
             fx:controller="gui.controller.MainViewController">
     <BorderPane VBox.vgrow="ALWAYS">
-        <bottom>
-            <ScrollPane VBox.vgrow="ALWAYS">
-                <TextArea
-                        fx:id="textArea"/>
-            </ScrollPane>
-        </bottom>
-        <left>
-            <HBox layoutX="120.0" layoutY="34.0" prefHeight="100.0" prefWidth="365.0">
+        <top>
+            <HBox layoutX="120.0" layoutY="34.0" prefHeight="100.0" prefWidth="500.0">
                 <Button layoutX="10" layoutY="10"
                         text="Create Graph of existing Project"
-                        onAction="#handleButtonAction" />
-
+                        onAction="#createProjectSelectionWindow" />
                 <Button layoutX="10" layoutY="10"
                         text="Import existing graph"
                         onAction="#importGraphButtonAction" />
                 <Button layoutX="10" layoutY="10"
                         text="Create New Graph"
                         onAction="#createNewGraph" />
+                <Button layoutX="10" layoutY="10"
+                        text="Instrument Source Code"
+                        onAction="#createInstrumentationWindow" />
+                <Button layoutX="10" layoutY="10"
+                        text="Analyze Log Files for Coverage"
+                        onAction="#createLogWindow" />
             </HBox>
 
-        </left>
-
+        </top>
+        <bottom>
+            <ScrollPane VBox.vgrow="ALWAYS">
+                <TextArea
+                        fx:id="textArea"/>
+            </ScrollPane>
+        </bottom>
     </BorderPane>
 
 </AnchorPane>
