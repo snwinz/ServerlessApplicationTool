@@ -6,12 +6,19 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import model.logic.Instrumentation.Instrumentator;
 import model.logic.modelcreation.ApplicationModel;
+import model.logic.modelcreation.Creator;
+import model.structure.Graph;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 public class InstrumentationSelectionController {
@@ -52,7 +59,17 @@ public class InstrumentationSelectionController {
     public void instrumentCode(ActionEvent actionEvent) {
         savePathsAsDefault();
 
+
+        Instrumentator.instrumentFilesOfFolder(sourceCodeDirectoryPath.getText());
+
+
+
+        view.getStage().close();
+
+
     }
+
+
 
     @FXML
     public void chooseSourceCodeDirectory(ActionEvent actionEvent) {
