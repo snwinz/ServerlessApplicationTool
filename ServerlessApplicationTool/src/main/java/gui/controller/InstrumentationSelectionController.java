@@ -1,16 +1,12 @@
 package gui.controller;
 
 import gui.view.InstrumentationSelectionView;
-import gui.view.ProjectSelectionView;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
-import model.logic.ApplicationModel;
-import model.logic.Creator;
-import model.structure.Graph;
+import model.logic.modelcreation.ApplicationModel;
 
 import java.io.File;
 import java.io.FileInputStream;

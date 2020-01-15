@@ -5,7 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import model.logic.ApplicationModel;
+import model.logic.modelcreation.ApplicationModel;
 
 import java.io.IOException;
 

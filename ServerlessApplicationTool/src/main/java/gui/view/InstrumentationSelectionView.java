@@ -1,12 +1,10 @@
 package gui.view;
 
 import gui.controller.InstrumentationSelectionController;
-import gui.controller.ProjectSelectionController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import model.logic.ApplicationModel;
 
 import java.io.IOException;
 

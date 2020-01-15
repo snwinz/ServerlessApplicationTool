@@ -6,7 +6,7 @@ import gui.view.nodes.DraggableNode;
 import javafx.scene.control.ComboBox;
 import model.DTO.GraphVisualisationDTO;
 import model.DTO.ArrowPositionDTO;
-import model.logic.GraphManipulation;
+import model.logic.modelcreation.GraphManipulation;
 import model.DTO.NodePositionDTO;
 
 import java.util.List;

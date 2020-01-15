@@ -7,8 +7,8 @@ import javafx.stage.FileChooser;
 import model.DTO.ArrowPositionDTO;
 import model.DTO.GraphVisualisationDTO;
 import model.DTO.NodePositionDTO;
-import model.logic.GraphManipulation;
-import model.logic.Saver;
+import model.logic.modelcreation.GraphManipulation;
+import model.logic.modelcreation.Saver;
 
 import java.io.File;
 import java.util.List;

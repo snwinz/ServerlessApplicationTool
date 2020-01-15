@@ -7,8 +7,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
-import model.logic.Creator;
-import model.logic.ApplicationModel;
+import model.logic.modelcreation.Creator;
+import model.logic.modelcreation.ApplicationModel;
 import model.structure.Graph;
 
 import java.io.File;

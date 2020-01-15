@@ -1,4 +1,4 @@
-package model.logic;
+package model.logic.modelcreation;
 
 import model.DTO.GraphVisualisationDTO;
 

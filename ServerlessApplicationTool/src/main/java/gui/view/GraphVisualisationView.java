@@ -21,7 +21,7 @@ import javafx.stage.WindowEvent;
 import model.DTO.ArrowPositionDTO;
 import model.DTO.CoordinatesDTO;
 import model.DTO.GraphVisualisationDTO;
-import model.logic.GraphManipulation;
+import model.logic.modelcreation.GraphManipulation;
 import model.DTO.NodePositionDTO;
 import model.structure.Arrow;
 import model.structure.Graph;

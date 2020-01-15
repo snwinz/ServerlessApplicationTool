@@ -10,8 +10,8 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.stage.FileChooser;
 import model.DTO.GraphVisualisationDTO;
-import model.logic.GraphManipulation;
-import model.logic.ApplicationModel;
+import model.logic.modelcreation.GraphManipulation;
+import model.logic.modelcreation.ApplicationModel;
 import model.structure.Graph;
 
 import java.io.File;

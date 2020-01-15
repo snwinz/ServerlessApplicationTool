@@ -1,4 +1,4 @@
-package model.logic;
+package model.logic.modelcreation;
 
 import gui.controller.MainViewController;
 import javafx.beans.property.SimpleStringProperty;
