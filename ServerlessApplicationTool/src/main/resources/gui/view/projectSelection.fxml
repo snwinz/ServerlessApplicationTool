@@ -13,13 +13,13 @@
     <Button layoutX="441.0" layoutY="50.0"
             onAction="#chooseCloudFormationFile" text="..."/>
     <Text layoutX="24.0" layoutY="90.0"
-          text="Path to Folder with serverless functions"/>
+          text="Path to Folder with source code of serverless functions"/>
     <TextField layoutX="24.0" layoutY="100.0" prefHeight="25.0"
                prefWidth="405.0" fx:id="serverlessFunctionsDirectoryPath"/>
     <Button layoutX="441.0" layoutY="100.0"
             onAction="#chooseServerlessFunctions" text="..."/>
     <Text layoutX="24.0" layoutY="140.0"
-          text="Path to folder with log files"/>
+          text="Path to folder with log files of functions"/>
     <TextField layoutX="24.0" layoutY="150.0" prefHeight="25.0"
                prefWidth="405.0" fx:id="logDirectoryPath"/>
     <Button layoutX="441.0" layoutY="150.0"
