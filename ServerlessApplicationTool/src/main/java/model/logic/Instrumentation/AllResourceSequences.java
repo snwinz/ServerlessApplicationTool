@@ -6,14 +6,23 @@ package model.logic.Instrumentation;
 public class AllResourceSequences implements CoverageInstrumentator {
     public final static String ARS_LOG_FUNCTIONSTART = "#ARS_S_";
     public final static String ARS_LOG_FUNCTIONINVOKATION = "#ARS_FI_";
-    public final static String ARS_LOG_DBACCESS = "#AR_DBA_";
-    public final static String ARS_LOG_DBREAD= "#AR_DBR_";
+    public final static String ARS_LOG_DBACCESS = "#ARS_DBA_";
+    public final static String ARS_LOG_DBREAD= "#ARS_DBR_";
     
     @Override
     public String addCoverageStatementsHandler(String line) {
         String logLine = String.format(
                 "{%n" +
-                        "   var oldSeqDB = event.Records;" +
+                        "   var oldSeqDB = event.Records;%n" + 
+                        "   if (oldSeqDB != undefined) {%n" + 
+                        "      try {%n" + 
+                        "         oldSeqDB = event.Records[0].dynamodb.NewImage.oldSeq.S;%n" + 
+                        "      }%n" + 
+                        "       catch (error) {%n" + 
+                        "         oldSeqDB = undefined;%n" + 
+                        "         console.error(\"old sequence could not be found: \" + error);%n" + 
+                        "      }%n" + 
+                        "    }"+
                         "   if (oldSeqDB != undefined) {%n" +
                         "      oldSeqDB = event.Records[0].dynamodb.NewImage.oldSeq.S;%n" +
                         "    }%n" +
@@ -39,7 +48,16 @@ public class AllResourceSequences implements CoverageInstrumentator {
         String logLine = String.format("{%n" +
                 "    var passingParameter = %s;%n" +
                 "    {%n" +
-                "   var oldSeqDB = event.Records;" +
+                "   var oldSeqDB = event.Records;%n" + 
+                "   if (oldSeqDB != undefined) {%n" + 
+                "      try {%n" + 
+                "         oldSeqDB = event.Records[0].dynamodb.NewImage.oldSeq.S;%n" + 
+                "      }%n" + 
+                "       catch (error) {%n" + 
+                "         oldSeqDB = undefined;%n" + 
+                "         console.error(\"old sequence could not be found: \" + error);%n" + 
+                "      }%n" + 
+                "    }"+
                 "   if (oldSeqDB != undefined) {%n" +
                 "      oldSeqDB = event.Records[0].dynamodb.NewImage.oldSeq.S;%n" +
                 "    }" +
@@ -56,8 +74,8 @@ public class AllResourceSequences implements CoverageInstrumentator {
                 "        }%n" +
                 "    }%n" +
                 "    passingParameter.Payload = passingParameter.Payload.replace	('\\{','{\"oldSeq\" : \"' + passedSequence + context.functionName + ';\",');%n " +
-                "    console.log('%s' + JSON.parse(passingParameter.Payload).oldSeq);%n" +
-                "}%n", nameOfFunction, ARS_LOG_DBREAD);
+                "    console.log('%s' + JSON.parse(passingParameter.Payload).oldSeq + passingParameter.FunctionName + ';');%n" +
+                "}%n", nameOfFunction, ARS_LOG_FUNCTIONINVOKATION);
 
         line = logLine + line;
         return  line;
@@ -81,7 +99,7 @@ public class AllResourceSequences implements CoverageInstrumentator {
                         "        }else if(oldSeqFunctionCall != undefined){%n" +
                         "            sequencePassed = oldSeqFunctionCall;%n" +
                         "        }else{%n" +
-                        "            console.log(\"Error: Function is not called by DB or Lambda. Check calling resource.\")%n" +
+                        "            console.log(\"Error: Function is not called by DB or Lambda. Check calling resource.\");%n" +
                         "        }%n" +
                         "         console.log('%s' + sequencePassed + context.functionName + ';' + passingParameter.TableName + ';'}%n" +
                         "        passingParameter.Item.oldSeq = {S: sequencePassed + context.functionName +';'+ passingParameter.TableName +';'}%n" +
@@ -98,7 +116,7 @@ public class AllResourceSequences implements CoverageInstrumentator {
         String logLine = String.format("{%n" +
                         "    var passingParameter = %s;%n" +
                         "    {%n" +
-                        "   var oldSeqDB = event.Records;" +
+                        "   var oldSeqDB = event.Records;%n" +
                         "   if (oldSeqDB != undefined) {%n" +
                         "      oldSeqDB = event.Records[0].dynamodb.NewImage.oldSeq.S;%n" +
                         "    }%n" +
@@ -111,7 +129,7 @@ public class AllResourceSequences implements CoverageInstrumentator {
                         "        }else if(oldSeqFunctionCall != undefined){%n" +
                         "            sequencePassed = oldSeqFunctionCall;%n" +
                         "        }else{%n" +
-                        "            console.log(\"Error: Function is not called by DB or Lambda. Check calling resource.\")%n" +
+                        "            console.log(\"Error: Function is not called by DB or Lambda. Check calling resource.\");%n" +
                         "        }%n" +
                         "        passingParameter.Item.oldSeq = {S: sequencePassed + context.functionName +';'+ passingParameter.TableName +';'}%n" +
                         "    }%n" +

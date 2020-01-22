@@ -31,9 +31,8 @@ public class AllResourceRelations implements CoverageInstrumentator {
 
     @Override
     public String addCoverageStatementDBisWritten(String line, String param) {
-        String parameter = line.split(param)[1].split(",")[0];
         String logLine = String.format("\tconsole.log('%s'+ context.functionName + ';' + %s.TableName);%n",
-                ARR_LOG_DBACCESS, parameter);
+                ARR_LOG_DBACCESS, param);
         line = logLine + line;
         return  line;
     }
