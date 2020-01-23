@@ -48,6 +48,12 @@ public class Instrumentator {
 			case ARS:
 				sourceText.addInstrumentator(new AllResourceSequences());
 				break;
+			case ARD:
+				sourceText.addInstrumentator(new AllResourceDefinitions());
+				break;
+			case ARU:
+				sourceText.addInstrumentator(new AllResourceUses());
+				break;
 			default:
 				break;
 			}
