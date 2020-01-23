@@ -3,92 +3,104 @@ package gui.controller;
 import gui.view.InstrumentationSelectionView;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import model.logic.Instrumentation.CoverageMode;
 import model.logic.Instrumentation.Instrumentator;
-import model.logic.modelcreation.ApplicationModel;
-import model.logic.modelcreation.Creator;
-import model.structure.Graph;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Properties;
 
 public class InstrumentationSelectionController {
 
-    private final FileChooser fileChooser = new FileChooser();
-    private final DirectoryChooser directoryChooser = new DirectoryChooser();
+	private final FileChooser fileChooser = new FileChooser();
+	private final DirectoryChooser directoryChooser = new DirectoryChooser();
 
-    @FXML
-    TextField sourceCodeDirectoryPath;
+	@FXML
+	TextField sourceCodeDirectoryPath;
 
-    private InstrumentationSelectionView view;
-    private ApplicationModel model;
+	@FXML
+	CheckBox checkbox_AR;
+	@FXML
+	CheckBox checkbox_ARR;
+	@FXML
+	CheckBox checkbox_ARS;
+	@FXML
+	CheckBox checkbox_ARD;
+	@FXML
+	CheckBox checkbox_ARU;
 
-    public void setViewAndSetup(InstrumentationSelectionView view) {
+	private InstrumentationSelectionView view;
 
-        this.view = view;
-        setDefaultPaths();
+	public void setViewAndSetup(InstrumentationSelectionView view) {
 
+		this.view = view;
+		setDefaultPaths();
 
-    }
+	}
 
-    private void setDefaultPaths() {
-        Properties loadProps = new Properties();
-        try {
-            loadProps.loadFromXML(new FileInputStream("settings.xml"));
-            String sourceCodeDirectoryPathText = loadProps.getProperty("sourceCodeDirectoryPath");
-            sourceCodeDirectoryPath.setText(sourceCodeDirectoryPathText);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+	private void setDefaultPaths() {
+		Properties loadProps = new Properties();
+		try {
+			loadProps.loadFromXML(new FileInputStream("settings.xml"));
+			String sourceCodeDirectoryPathText = loadProps.getProperty("sourceCodeDirectoryPath");
+			sourceCodeDirectoryPath.setText(sourceCodeDirectoryPathText);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
+	}
 
-    }
+	@FXML
+	public void instrumentCode(ActionEvent actionEvent) {
+		savePathsAsDefault();
 
+		Instrumentator instrumentator = new Instrumentator();
 
+		if (checkbox_AR.isSelected()) {
+			instrumentator.addCoverageMode(CoverageMode.AR);
+		}
+		if (checkbox_ARR.isSelected()) {
+			instrumentator.addCoverageMode(CoverageMode.ARR);
+		}
+		if (checkbox_ARS.isSelected()) {
+			instrumentator.addCoverageMode(CoverageMode.ARS);
+		}
+		if (checkbox_ARD.isSelected()) {
+			instrumentator.addCoverageMode(CoverageMode.ARD);
+		}
+		if (checkbox_ARU.isSelected()) {
+			instrumentator.addCoverageMode(CoverageMode.ARU);
+		}
 
-    @FXML
-    public void instrumentCode(ActionEvent actionEvent) {
-        savePathsAsDefault();
+		instrumentator.instrumentFilesOfFolder(sourceCodeDirectoryPath.getText());
 
+		view.getStage().close();
 
-        Instrumentator.instrumentFilesOfFolder(sourceCodeDirectoryPath.getText());
+	}
 
+	@FXML
+	public void chooseSourceCodeDirectory(ActionEvent actionEvent) {
+		File file = directoryChooser.showDialog(view.getStage());
+		if (file != null) {
+			sourceCodeDirectoryPath.setText(file.getPath());
+		}
+	}
 
+	private void savePathsAsDefault() {
+		Properties saveProps = new Properties();
+		saveProps.setProperty("sourceCodeDirectoryPath", sourceCodeDirectoryPath.getText());
+		try {
+			saveProps.storeToXML(new FileOutputStream("settings.xml"), "");
+		} catch (IOException e) {
+			System.err.println("Default paths couldn't be saved!");
+			e.printStackTrace();
+		}
 
-        view.getStage().close();
-
-
-    }
-
-
-
-    @FXML
-    public void chooseSourceCodeDirectory(ActionEvent actionEvent) {
-        File file = directoryChooser.showDialog(view.getStage());
-        if (file != null) {
-            sourceCodeDirectoryPath.setText(file.getPath());
-        }
-    }
-
-
-    private void savePathsAsDefault() {
-        Properties saveProps = new Properties();
-        saveProps.setProperty("sourceCodeDirectoryPath", sourceCodeDirectoryPath.getText());
-        try {
-            saveProps.storeToXML(new FileOutputStream("settings.xml"), "");
-        } catch (IOException e) {
-            System.err.println("Default paths couldn't be saved!");
-            e.printStackTrace();
-        }
-
-    }
+	}
 }

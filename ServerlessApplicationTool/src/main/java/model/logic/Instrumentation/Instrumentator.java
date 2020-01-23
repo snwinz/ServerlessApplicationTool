@@ -13,17 +13,20 @@ public class Instrumentator {
 
 	public final static String[] accessPatternsDB = { ".putItem(", ".getItem(", ".deleteItem(", "updateItem(" };
 
-	public static List<String> instrument(Path file) {
+	private List<CoverageMode> coverageModes = new ArrayList<CoverageMode>();
+
+	public void addCoverageMode(CoverageMode mode) {
+		coverageModes.add(mode);
+	}
+
+	public List<String> instrument(Path file) {
 		List<String> allLinesOfFile = new ArrayList<String>();
 		try {
 			allLinesOfFile = Files.readAllLines(file);
 			SourceFile sourceText = new SourceFile(allLinesOfFile);
-			// sourceText.addInstrumentator(new AllResourcesMode());
-			//sourceText.addInstrumentator(new AllResourceRelations());
-			sourceText.addInstrumentator(new AllResourceSequences());
+
+			addCoverageModesToSourceText(sourceText);
 			sourceText.instrumentAllResources();
-			// allLinesOfFile = addAllResourceRelationsCoverage(allLinesOfFile,
-			// functionName);
 			allLinesOfFile = sourceText.getSourceCode();
 		} catch (IOException e) {
 			System.err.format("file %s could not be read.%n", file.toString());
@@ -32,15 +35,33 @@ public class Instrumentator {
 		return allLinesOfFile;
 	}
 
-	private static String getFunctionName(Path file) {
-		String filename = file.getFileName().toString();
-		if (filename.contains(".")) {
-			filename = filename.split("\\.")[0];
+	private void addCoverageModesToSourceText(SourceFile sourceText) {
+		for (CoverageMode mode : coverageModes) {
+
+			switch (mode) {
+			case AR:
+				sourceText.addInstrumentator(new AllResourcesMode());
+				break;
+			case ARR:
+				sourceText.addInstrumentator(new AllResourceRelations());
+				break;
+			case ARS:
+				sourceText.addInstrumentator(new AllResourceSequences());
+				break;
+			default:
+				break;
+			}
+
 		}
-		return filename;
 	}
 
-	public static void instrumentFilesOfFolder(String directoryToSourceCodeOfFunctions) {
+	public void instrumentFilesOfFolder(String directoryToSourceCodeOfFunctions) {
+
+		for (CoverageMode mode : coverageModes) {
+			System.out.println(mode);
+		}
+		System.out.println();
+
 		Path folderOfInstrumentedFunctions = createFolderForResult(directoryToSourceCodeOfFunctions);
 
 		try (DirectoryStream<Path> directoryStreamFunctions = Files
@@ -48,7 +69,7 @@ public class Instrumentator {
 			for (Path file : directoryStreamFunctions) {
 
 				System.out.println(file.toString());
-				List<String> instrumentedFile = Instrumentator.instrument(file);
+				List<String> instrumentedFile = instrument(file);
 				saveInstrumentedFile(instrumentedFile, folderOfInstrumentedFunctions, file.getFileName().toString());
 			}
 		} catch (IOException ex) {
