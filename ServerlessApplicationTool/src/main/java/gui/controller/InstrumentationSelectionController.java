@@ -6,7 +6,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
 import model.logic.Instrumentation.CoverageMode;
 import model.logic.Instrumentation.Instrumentator;
 
@@ -18,7 +17,6 @@ import java.util.Properties;
 
 public class InstrumentationSelectionController {
 
-	private final FileChooser fileChooser = new FileChooser();
 	private final DirectoryChooser directoryChooser = new DirectoryChooser();
 
 	@FXML
@@ -94,8 +92,9 @@ public class InstrumentationSelectionController {
 
 	private void savePathsAsDefault() {
 		Properties saveProps = new Properties();
-		saveProps.setProperty("sourceCodeDirectoryPath", sourceCodeDirectoryPath.getText());
 		try {
+			saveProps.loadFromXML(new FileInputStream("settings.xml"));
+			saveProps.setProperty("sourceCodeDirectoryPath", sourceCodeDirectoryPath.getText());
 			saveProps.storeToXML(new FileOutputStream("settings.xml"), "");
 		} catch (IOException e) {
 			System.err.println("Default paths couldn't be saved!");

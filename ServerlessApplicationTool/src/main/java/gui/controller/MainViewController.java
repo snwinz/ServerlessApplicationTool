@@ -2,11 +2,11 @@ package gui.controller;
 
 import gui.view.GraphVisualisationView;
 import gui.view.InstrumentationSelectionView;
+import gui.view.LogFileSelectionView;
 import gui.view.MainView;
 import gui.view.ProjectSelectionView;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.stage.FileChooser;
 import model.DTO.GraphVisualisationDTO;
@@ -24,7 +24,6 @@ public class MainViewController {
     @FXML
     private TextArea textArea;
     @FXML
-    private ScrollPane scrollPane;
     private ApplicationModel model;
 
     public void createProjectSelectionWindow(ActionEvent event) {
@@ -46,14 +45,18 @@ public class MainViewController {
         view.show();
     }
 
+
+    private void createLogWindow() throws IOException {
+        LogFileSelectionView view = new LogFileSelectionView();
+        view.show();
+    }
+
+
     public void setup(MainView view, ApplicationModel model) {
         this.model = model;
         this.view = view;
     }
 
-    public ScrollPane getScrollPane() {
-        return scrollPane;
-    }
 
     public void importGraphButtonAction() {
 
@@ -105,6 +108,11 @@ public class MainViewController {
     }
 
     public void createLogWindow(ActionEvent actionEvent) {
-        System.out.println("TODO2");
+        try {
+            createLogWindow();
+        } catch (IOException e) {
+
+            System.err.println("Instrumentation selection window cannot be created.");
+        }
     }
 }

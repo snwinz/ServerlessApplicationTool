@@ -86,7 +86,7 @@ public class AllResourceSequences implements CoverageInstrumentator {
         String logLine = String.format("{%n" +
                         "    var passingParameter = %s;%n" +
                         "    {%n" +
-                        "   var oldSeqDB = event.Records;" +
+                        "   var oldSeqDB = event.Records;%n" +
                         "   if (oldSeqDB != undefined) {%n" +
                         "      oldSeqDB = event.Records[0].dynamodb.NewImage.oldSeq.S;%n" +
                         "    }%n" +
@@ -101,10 +101,10 @@ public class AllResourceSequences implements CoverageInstrumentator {
                         "        }else{%n" +
                         "            console.log(\"Error: Function is not called by DB or Lambda. Check calling resource.\");%n" +
                         "        }%n" +
-                        "         console.log('%s' + sequencePassed + context.functionName + ';' + passingParameter.TableName + ';'}%n" +
+                        "         console.log('%s' + sequencePassed + context.functionName + ';' + passingParameter.TableName + ';');%n" +
                         "        passingParameter.Item.oldSeq = {S: sequencePassed + context.functionName +';'+ passingParameter.TableName +';'}%n" +
                         "    }%n" +
-                        "}",
+                        "}%n",
                 param, ARS_LOG_DBACCESS);
         line = logLine + line;
         return line;
