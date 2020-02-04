@@ -6,8 +6,8 @@
 <?import javafx.scene.layout.HBox?>
 
 <AnchorPane id="AnchorPane" prefHeight="400" prefWidth="999" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="gui.controller.MainViewController">
- 
-        
+
+
             <HBox layoutX="120.0" layoutY="34.0" prefHeight="400.0" prefWidth="999.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                 <Button layoutX="10" layoutY="10" onAction="#createProjectSelectionWindow" text="Create Graph of existing Project" />
                 <Button layoutX="10" layoutY="10" onAction="#importGraphButtonAction" text="Import existing graph" />
@@ -16,7 +16,7 @@
                 <Button layoutX="10" layoutY="10" onAction="#createLogWindow" text="Analyze Log Files for Coverage" />
             </HBox>
              <TextArea fx:id="textArea" layoutX="41.0" layoutY="98.0" />
-   
-   
+
+
 
 </AnchorPane>

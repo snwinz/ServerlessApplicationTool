@@ -1,11 +1,13 @@
 package model.logic.Instrumentation;
 
 public interface CoverageInstrumentator {
-    String addCoverageStatementsHandler(String line);
+    public String addCoverageStatementsHandler(String line);
 
-    String addCoverageStatementsInvocation(String line, String nameOfFunction);
-    String addCoverageStatementDBisRead(String line, String param);
+    public String addCoverageStatementsInvocation(String line, String nameOfFunction);
+
+    public String addCoverageStatementDBisRead(String line, String param);
 
 
-    String addCoverageStatementDBisWritten(String line, String param);
+    public String addCoverageStatementDBisWritten(String line, String param);
+
 }

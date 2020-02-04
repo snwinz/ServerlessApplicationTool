@@ -24,7 +24,6 @@ public class MainView implements PropertyChangeListener {
         Parent root = loader.load();
         controller = loader.getController();
         scene = new Scene(root);
-        Button button = new Button("Load existing graph");
         this.stage = stage;
     }
 

@@ -1,5 +1,6 @@
 package gui.controller;
 
+import gui.view.CoverageResultView;
 import gui.view.LogFileSelectionView;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,10 +22,8 @@ public class LogFileSelectionController {
     private LogFileSelectionView view;
 
     public void setViewAndSetup(LogFileSelectionView view) {
-
         this.view = view;
         setDefaultPaths();
-
     }
 
     private void setDefaultPaths() {
@@ -43,6 +42,10 @@ public class LogFileSelectionController {
         savePathsAsDefault();
         LogFileEvaluator evaluator = new LogFileEvaluator();
         String result = evaluator.evaluate(logFilePath.getText());
+
+        CoverageResultView view = new CoverageResultView();
+
+        view.show(result);
 
     }
 

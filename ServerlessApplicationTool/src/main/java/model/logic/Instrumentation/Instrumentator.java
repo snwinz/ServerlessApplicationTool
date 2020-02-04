@@ -40,19 +40,19 @@ public class Instrumentator {
 
             switch (mode) {
                 case AR:
-                    sourceText.addInstrumentator(new AllResourcesMode());
+                    sourceText.addInstrumentator(new InstrumentatorAR());
                     break;
                 case ARR:
-                    sourceText.addInstrumentator(new AllResourceRelations());
+                    sourceText.addInstrumentator(new InstrumentatorARR());
                     break;
                 case ARS:
-                    sourceText.addInstrumentator(new AllResourceSequences());
+                    sourceText.addInstrumentator(new InstrumentatorARS());
                     break;
                 case ARD:
-                    sourceText.addInstrumentator(new AllResourceDefinitions());
+                    sourceText.addInstrumentator(new InstrumentatorDefs());
                     break;
                 case ARU:
-                    sourceText.addInstrumentator(new AllResourceUses());
+                    sourceText.addInstrumentator(new InstrumentatorUses());
                     break;
                 default:
                     break;
