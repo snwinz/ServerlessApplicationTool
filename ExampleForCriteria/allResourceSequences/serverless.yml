@@ -1,0 +1,71 @@
+service: allResourceSequences
+provider:
+  stage: beta
+  region: eu-central-1
+  name: aws
+  runtime: nodejs12.x
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - 'lambda:InvokeFunction'
+        - 'lambda:InvokeAsync'
+        - 'dynamodb:PutItem'
+        - 'dynamodb:GetItem'
+      Resource: '*'
+functions:
+  DBGetter_ARS:
+    handler: DBGetter_ARS.handler
+    name: DBGetter_ARS
+    events: []
+  DBWriter_ARS:
+    handler: DBWriter_ARS.handler
+    name: DBWriter_ARS
+    events: []
+  Invoker_ARS1:
+    handler: Invoker_ARS1.handler
+    name: Invoker_ARS1
+    events: []
+  Invoker_ARS2:
+    handler: Invoker_ARS2.handler
+    name: Invoker_ARS2
+    events: []
+  Processor_ARS1:
+    handler: Processor_ARS1.handler
+    name: Processor_ARS1
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            'Fn::GetAtt':
+              - TableARS
+              - StreamArn
+          maximumRetryAttempts: 3
+  Processor_ARS2:
+    handler: Processor_ARS2.handler
+    name: Processor_ARS2
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            'Fn::GetAtt':
+              - TableARS
+              - StreamArn
+          maximumRetryAttempts: 3
+resources:
+  Resources:
+    TableARS:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        TableName: Table_ARS
+        AttributeDefinitions:
+          - AttributeName: myID
+            AttributeType: 'N'
+        KeySchema:
+          - AttributeName: myID
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+

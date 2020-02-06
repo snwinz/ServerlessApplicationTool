@@ -1,0 +1,55 @@
+service: allDefs
+provider:
+  stage: beta
+  region: eu-central-1
+  name: aws
+  runtime: nodejs12.x
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - 'lambda:InvokeFunction'
+        - 'lambda:InvokeAsync'
+        - 'dynamodb:PutItem'
+        - 'dynamodb:GetItem'
+      Resource: '*'
+functions:
+  Caller_AD:
+    handler: Caller_AD.handler
+    name: Caller_AD
+    events: []
+  Callee1_AD:
+    handler: Callee1_AD.handler
+    name: Callee1_AD
+    events: []
+  Callee2_AD:
+    handler: Callee2_AD.handler
+    name: Callee2_AD
+    events: []
+  Writer_AD:
+    handler: Writer_AD.handler
+    name: Writer_AD
+    events: []
+  Getter1_AD:
+    handler: Getter1_AD.handler
+    name: Getter1_AD
+    events: []
+  Getter2_AD:
+    handler: Getter2_AD.handler
+    name: Getter2_AD
+    events: []
+resources:
+  Resources:
+    TableARS:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        TableName: Table_AD
+        AttributeDefinitions:
+          - AttributeName: myID
+            AttributeType: 'N'
+        KeySchema:
+          - AttributeName: myID
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+

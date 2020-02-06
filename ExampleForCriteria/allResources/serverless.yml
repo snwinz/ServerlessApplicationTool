@@ -1,0 +1,56 @@
+service: allResources
+provider:
+  stage: beta
+  region: eu-central-1
+  name: aws
+  runtime: nodejs12.x
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - 'lambda:InvokeFunction'
+        - 'lambda:InvokeAsync'
+        - 'dynamodb:PutItem'
+        - 'dynamodb:GetItem'
+      Resource: '*'
+functions:
+  DBGetter_AR:
+    handler: DBGetter_AR.handler
+    name: DBGetter_AR
+    events: []
+  DBWriter_AR:
+    handler: DBWriter_AR.handler
+    name: DBWriter_AR
+    events: []
+  Invoker_AR:
+    handler: Invoker_AR.handler
+    name: Invoker_AR
+    events: []
+  Processor_AR:
+    handler: Processor_AR.handler
+    name: Processor_AR
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            'Fn::GetAtt':
+              - TableAR
+              - StreamArn
+          maximumRetryAttempts: 3
+resources:
+  Resources:
+    TableAR:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        TableName: Table_AR
+        AttributeDefinitions:
+          - AttributeName: myID
+            AttributeType: 'N'
+        KeySchema:
+          - AttributeName: myID
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+
