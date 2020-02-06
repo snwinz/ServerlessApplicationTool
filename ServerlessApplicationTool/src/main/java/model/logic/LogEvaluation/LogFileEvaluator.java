@@ -6,11 +6,9 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toMap;
 import static java.util.Map.Entry.*;
 
 public class LogFileEvaluator {
-    HashMap<String, Integer> allResourcesCovered = new HashMap<>();
 
 
     public String evaluate(String text) {

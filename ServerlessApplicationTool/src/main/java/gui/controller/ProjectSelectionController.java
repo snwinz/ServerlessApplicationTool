@@ -27,8 +27,7 @@ public class ProjectSelectionController {
     TextField serverlessFunctionsDirectoryPath;
     @FXML
     TextField logDirectoryPath;
-    @FXML
-    TextArea textArea;
+
     private ProjectSelectionView view;
     private ApplicationModel model;
 

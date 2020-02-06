@@ -15,31 +15,31 @@ public class SourceFile {
     public final List<CoverageInstrumentator> selectedCoverageModes = new LinkedList<>();
 
 
-    private  List<String> allLines = new ArrayList<String>();;
+    private List<String> allLines;
 
     public SourceFile(List<String> allLinesOfFile) {
         this.allLines = allLinesOfFile;
     }
 
-    public void instrument(CoverageInstrumentator instrumentator ) {
+    public void instrument(CoverageInstrumentator instrumentator) {
 
         List<String> resultList = new ArrayList<String>();
         for (String line : this.allLines) {
             // Start of function
             if (line.trim().contains("exports.handler")) {
-                    line = instrumentator.addCoverageStatementsHandler(line);
+                line = instrumentator.addCoverageStatementsHandler(line);
             }
             // invocation of other lambda function
             if (line.trim().contains(".invoke(")) {
                 String nameOfFunction = line.split("\\.invoke\\(")[1].split(",")[0];
-                    line = instrumentator.addCoverageStatementsInvocation(line, nameOfFunction);
+                line = instrumentator.addCoverageStatementsInvocation(line, nameOfFunction);
             }
             //write DB
             for (String pattern : writePatternsDB) {
                 if (line.trim().contains(pattern)) {
                     pattern = pattern.replace(".", "\\.").replace("(", "\\(");
                     String parameter = line.split(pattern)[1].split(",")[0];
-                        line = instrumentator.addCoverageStatementDBisWritten(line, parameter);
+                    line = instrumentator.addCoverageStatementDBisWritten(line, parameter);
                 }
             }
             //read DB
@@ -47,7 +47,7 @@ public class SourceFile {
                 if (line.trim().contains(pattern)) {
                     pattern = pattern.replace(".", "\\.").replace("(", "\\(");
                     String parameter = line.split(pattern)[1].split(",")[0];
-                        line = instrumentator.addCoverageStatementDBisRead(line, parameter);
+                    line = instrumentator.addCoverageStatementDBisRead(line, parameter);
                 }
             }
 
@@ -62,12 +62,12 @@ public class SourceFile {
 
 
     public void instrumentAllResources() {
-        for(CoverageInstrumentator instrumentator : selectedCoverageModes){
-           this.instrument(instrumentator);
+        for (CoverageInstrumentator instrumentator : selectedCoverageModes) {
+            this.instrument(instrumentator);
         }
     }
 
     public List<String> getSourceCode() {
-        return  this.allLines;
+        return this.allLines;
     }
 }
