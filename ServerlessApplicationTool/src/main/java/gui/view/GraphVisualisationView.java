@@ -87,17 +87,13 @@ public class GraphVisualisationView implements PropertyChangeListener {
 
     private EventHandler<ActionEvent> createEventHandlerCreateNode() {
         return event -> {
-            NodeCreatorController controller = new NodeCreatorController(model, draggableNodes, draggableDraggableArrows);
-            NodeCreatorView createNodeView = new NodeCreatorView(controller);
-            createNodeView.setup(coordinates);
+        	controller.createNode(draggableNodes,draggableDraggableArrows, coordinates);
         };
     }
 
     private EventHandler<ActionEvent> createEventHandlerCreateArrow() {
         return event -> {
-            ArrowCreatorController controller = new ArrowCreatorController(model, draggableNodes, draggableDraggableArrows);
-            ArrowCreatorView createArrowView = new ArrowCreatorView(controller);
-            createArrowView.setup();
+        	controller.createArrow(draggableNodes, draggableDraggableArrows);
         };
     }
 

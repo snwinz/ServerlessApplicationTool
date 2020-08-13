@@ -17,7 +17,7 @@ import javax.xml.bind.Marshaller;
 import java.io.StringWriter;
 import java.util.Arrays;
 
-class NodeCreatorView extends Dialog {
+public class NodeCreatorView extends Dialog {
 
     private final NodeCreatorController controller;
     private CoordinatesDTO coordinatesDTO;

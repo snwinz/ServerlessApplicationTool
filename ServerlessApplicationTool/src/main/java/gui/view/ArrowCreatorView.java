@@ -15,7 +15,7 @@ import javax.xml.bind.Marshaller;
 import java.io.StringWriter;
 import java.util.Arrays;
 
-class ArrowCreatorView extends Dialog {
+public class ArrowCreatorView extends Dialog {
 
     private final ArrowCreatorController controller;
     private final ComboBox<String> comboBoxSuccessor = new ComboBox<>();
