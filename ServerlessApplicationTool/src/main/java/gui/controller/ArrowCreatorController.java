@@ -1,6 +1,6 @@
 package gui.controller;
 
-
+import gui.view.ArrowCreatorView;
 import gui.view.nodes.DraggableArrow;
 import gui.view.nodes.DraggableNode;
 import javafx.scene.control.ComboBox;
@@ -13,41 +13,47 @@ import java.util.List;
 
 public class ArrowCreatorController {
 
-    private final GraphManipulation model;
-    private final List<DraggableNode> draggableNodes;
-    private final List<DraggableArrow> draggableDraggableArrows;
+	private final GraphManipulation model;
+	private final List<DraggableNode> draggableNodes;
+	private final List<DraggableArrow> draggableDraggableArrows;
+	private ArrowCreatorView view;
 
+	public ArrowCreatorController(GraphManipulation model, List<DraggableNode> draggableNodes,
+			List<DraggableArrow> draggableDraggableArrows) {
+		this.model = model;
+		this.draggableDraggableArrows = draggableDraggableArrows;
+		this.draggableNodes = draggableNodes;
+	}
 
-    public ArrowCreatorController(GraphManipulation model, List<DraggableNode> draggableNodes, List<DraggableArrow> draggableDraggableArrows) {
-        this.model = model;
-        this.draggableDraggableArrows = draggableDraggableArrows;
-        this.draggableNodes = draggableNodes;
-    }
+	public void addArrowToGraph(String xmlText) {
 
+		GraphVisualisationDTO graphVisualisationDTO = new GraphVisualisationDTO(model.getGraph());
 
-    public void addArrowToGraph(String xmlText) {
+		for (DraggableNode node : draggableNodes) {
 
+			graphVisualisationDTO.addNodePosition(NodePositionDTO.getNodePosition(node));
+		}
 
-        GraphVisualisationDTO graphVisualisationDTO = new GraphVisualisationDTO(model.getGraph());
+		for (DraggableArrow draggableArrow : draggableDraggableArrows) {
+			graphVisualisationDTO.addArrowPosition(ArrowPositionDTO.getArrowPosition(draggableArrow));
+		}
 
-        for (DraggableNode node : draggableNodes) {
+		model.addArrow(xmlText, graphVisualisationDTO);
+	}
 
-            graphVisualisationDTO.addNodePosition(NodePositionDTO.getNodePosition(node));
-        }
+	public void fillComboBoxWithAllNodes(ComboBox<String> comboBoxPredecessor) {
+		for (DraggableNode node : draggableNodes) {
+			comboBoxPredecessor.getItems().add(node.getNameOfNode());
+		}
 
-        for (DraggableArrow draggableArrow : draggableDraggableArrows) {
-            graphVisualisationDTO.addArrowPosition(ArrowPositionDTO.getArrowPosition(draggableArrow));
-        }
+	}
 
+	public void closeWindow() {
+		view.closeWindow();
+	}
 
-        model.addArrow(xmlText, graphVisualisationDTO);
-    }
-
-    public void fillComboBoxWithAllNodes(ComboBox<String> comboBoxPredecessor) {
-        for (DraggableNode node : draggableNodes) {
-            comboBoxPredecessor.getItems().add(node.getNameOfNode());
-        }
-
-
-    }
+	public void setup() {
+		this.view = new ArrowCreatorView(this);
+		view.setup();
+	}
 }

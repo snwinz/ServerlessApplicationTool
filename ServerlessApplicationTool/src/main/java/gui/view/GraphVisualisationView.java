@@ -119,14 +119,11 @@ public class GraphVisualisationView implements PropertyChangeListener {
         MenuItem openNewGraphItem = new MenuItem("Open Graph");
         MenuItem analyzeGraphItem = new MenuItem("Analyze Graph");
         closeItem.setOnAction(event -> {
-            model.removePropertyChangeListener(GraphVisualisationView.this);
-            stage.close();
+        	controller.closeWindow();
         });
 
         analyzeGraphItem.setOnAction(event -> {
             controller.analyzeGraph();
-
-
         });
         saveGraphItem.setOnAction(event -> controller.saveGraph(draggableNodes, draggableDraggableArrows));
         openNewGraphItem.setOnAction(event -> controller.openGraph());
@@ -156,40 +153,26 @@ public class GraphVisualisationView implements PropertyChangeListener {
 
     private void setPositionOfArrow(List<ArrowPositionDTO> arrowPositionDTOS) {
         for (ArrowPositionDTO arrowPositionDTO : arrowPositionDTOS) {
-
-
             for (DraggableArrow draggableArrow : draggableDraggableArrows) {
-
                 if (draggableArrow.getName().equals(arrowPositionDTO.getName())) {
                     draggableArrow.setStartXProperty(arrowPositionDTO.getStartXOffset());
                     draggableArrow.setStartYProperty(arrowPositionDTO.getStartYOffset());
                     draggableArrow.setEndXProperty(arrowPositionDTO.getEndXOffset());
                     draggableArrow.setEndProperty(arrowPositionDTO.getEndYOffset());
                 }
-
             }
-
         }
-
     }
 
     private void setPositionsOfNodes(List<NodePositionDTO> nodePositionDTOS) {
-
         for (NodePositionDTO nodePositionDTO : nodePositionDTOS) {
-
-
             for (DraggableNode node : draggableNodes) {
-
                 if (node.getNameOfNode().equals(nodePositionDTO.getName())) {
                     node.setLayoutX(nodePositionDTO.getX());
                     node.setLayoutY(nodePositionDTO.getY());
                 }
-
             }
-
         }
-
-
     }
 
     private void createTitle(Group group) {
@@ -278,8 +261,6 @@ public class GraphVisualisationView implements PropertyChangeListener {
 
                 stage.setScene(scene);
                 stage.show();
-
-
             }
         }
     }
@@ -300,6 +281,10 @@ public class GraphVisualisationView implements PropertyChangeListener {
         alert.setContentText(info);
         alert.showAndWait();
     }
+
+	public void closeWindow() {
+		stage.close();
+	}
 
 
 }

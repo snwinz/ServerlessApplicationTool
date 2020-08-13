@@ -1,20 +1,22 @@
 package gui.controller;
 
+import java.util.List;
+
+import gui.view.NodeCreatorView;
 import gui.view.nodes.DraggableArrow;
 import gui.view.nodes.DraggableNode;
+import model.DTO.ArrowPositionDTO;
 import model.DTO.CoordinatesDTO;
 import model.DTO.GraphVisualisationDTO;
-import model.DTO.ArrowPositionDTO;
-import model.logic.modelcreation.GraphManipulation;
 import model.DTO.NodePositionDTO;
-
-import java.util.List;
+import model.logic.modelcreation.GraphManipulation;
 
 public class NodeCreatorController {
 
     private final GraphManipulation model;
     private final List<DraggableNode> draggableNodes;
     private final List<DraggableArrow> draggableDraggableArrows;
+	private NodeCreatorView view;
 
 
     public NodeCreatorController(GraphManipulation model, List<DraggableNode> draggableNodes, List<DraggableArrow> draggableDraggableArrows) {
@@ -38,4 +40,10 @@ public class NodeCreatorController {
 
         model.addNode(xmlText, coordinatesDTO, graphVisualisationDTO);
     }
+
+
+	public void setup(CoordinatesDTO coordinates) {
+		this.view = new NodeCreatorView(this);
+		view.setup(coordinates);		
+	}
 }

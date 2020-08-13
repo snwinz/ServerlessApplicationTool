@@ -117,14 +117,20 @@ public class GraphVisualisationController {
 
 	public void createArrow(List<DraggableNode> draggableNodes, List<DraggableArrow> draggableDraggableArrows) {
 		ArrowCreatorController controller = new ArrowCreatorController(model, draggableNodes, draggableDraggableArrows);
-		ArrowCreatorView createArrowView = new ArrowCreatorView(controller);
-		createArrowView.setup();
+		controller.setup();
 	}
 
 	public void createNode(List<DraggableNode> draggableNodes, List<DraggableArrow> draggableDraggableArrows,
 			CoordinatesDTO coordinates) {
+		
 		NodeCreatorController controller = new NodeCreatorController(model, draggableNodes, draggableDraggableArrows);
-		NodeCreatorView createNodeView = new NodeCreatorView(controller);
-		createNodeView.setup(coordinates);
+		controller.setup(coordinates);
+
+	}
+
+	public void closeWindow() {
+		model.removePropertyChangeListener(view);
+		view.closeWindow();
+		
 	}
 }
