@@ -11,13 +11,18 @@ import java.util.List;
 public class GraphVisualisationDTO extends Node {
 
 
-    private List<NodePositionDTO> nodePositionDTOS = new ArrayList<>();
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private List<NodePositionDTO> nodePositionDTOS = new ArrayList<>();
 
     private List<ArrowPositionDTO> arrowPositionDTOS = new ArrayList<>();
 
     private Graph graph;
 
-    private GraphVisualisationDTO() {
+    public GraphVisualisationDTO() {
     }
 
     public GraphVisualisationDTO(Graph graph) {

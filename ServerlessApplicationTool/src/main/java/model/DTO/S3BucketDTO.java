@@ -8,7 +8,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class S3BucketDTO extends NodeDTO {
 
-    public String bucketName = "";
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	public String bucketName = "";
 
     public S3BucketDTO() {
     }
@@ -21,7 +25,7 @@ public class S3BucketDTO extends NodeDTO {
         return bucketName;
     }
 
-    private void setBucketName(String bucketName) {
+    public void setBucketName(String bucketName) {
         this.bucketName = bucketName;
     }
 

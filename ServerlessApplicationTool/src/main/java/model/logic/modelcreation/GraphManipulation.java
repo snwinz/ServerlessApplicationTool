@@ -28,7 +28,6 @@ public class GraphManipulation {
     }
 
     public void remove(GraphVisualisationDTO graphDTO, Arrow alias) {
-        Graph graph = graphDTO.getGraph();
         alias.getPredecessor().removeOutgoingArrow(alias);
 
         this.pcs.firePropertyChange("graphUpdated", null, graphDTO);
@@ -67,8 +66,7 @@ public class GraphManipulation {
 
 
         for (Node currentNode : graphVisualisationDTO.getGraph().getNodes()) {
-            List<Arrow> outgoingArrows = currentNode.getOutgoingArrows();
-            Iterator itr = currentNode.getOutgoingArrows().iterator();
+            Iterator<Arrow> itr = currentNode.getOutgoingArrows().iterator();
             while (itr.hasNext()) {
                 Arrow currentArrow = (Arrow) itr.next();
                 if (currentArrow.getSuccessor().getName().equals(node.getName())

@@ -11,10 +11,9 @@ public class CoverageResultController {
     TextArea coverageResults;
 
 
-    private CoverageResultView view;
 
     public void setView(CoverageResultView view) {
-        this.view = view;
+
     }
 
 

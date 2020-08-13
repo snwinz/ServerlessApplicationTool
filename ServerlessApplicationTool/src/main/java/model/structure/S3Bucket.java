@@ -5,7 +5,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class S3Bucket extends Node {
 
-    private String bucketName = "";
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String bucketName = "";
 
     public S3Bucket() {
     }

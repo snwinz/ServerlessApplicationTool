@@ -4,7 +4,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class DynamoDB extends Node {
-    private String tableName = "";
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String tableName = "";
 
     public DynamoDB() {
     }

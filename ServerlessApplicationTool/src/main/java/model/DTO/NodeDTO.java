@@ -11,6 +11,10 @@ import java.io.Serializable;
 @XmlSeeAlso({FunctionDTO.class, S3BucketDTO.class, DynamoDBDTO.class})
 public class NodeDTO implements Serializable {
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	/**
      *
      */
     private String name = "";

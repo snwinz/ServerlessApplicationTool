@@ -94,7 +94,7 @@ public class Creator {
         }
 
     }
-
+    /*
     private static void reduceModel(Graph graph) {
         List<Node> nodes = new LinkedList<>();
         for (Node node : graph.getNodes()) {
@@ -117,7 +117,8 @@ public class Creator {
         }
 
     }
-
+	*/
+    
     private static void createBasicModel(String filePathStackFile, Graph graph) {
         Path path = Paths.get(filePathStackFile);
         if (Files.exists(path)) {

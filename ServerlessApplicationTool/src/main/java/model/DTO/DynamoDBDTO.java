@@ -7,7 +7,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class DynamoDBDTO extends NodeDTO {
-    private String tableName = "";
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String tableName = "";
 
     public DynamoDBDTO() {
     }

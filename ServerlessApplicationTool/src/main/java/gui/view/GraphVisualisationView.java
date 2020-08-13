@@ -1,8 +1,6 @@
 package gui.view;
 
-import gui.controller.ArrowCreatorController;
 import gui.controller.GraphVisualisationController;
-import gui.controller.NodeCreatorController;
 import gui.view.nodes.DraggableArrow;
 import gui.view.nodes.DraggableNode;
 import javafx.beans.property.DoubleProperty;
@@ -138,16 +136,6 @@ public class GraphVisualisationView implements PropertyChangeListener {
 
         menuBar.getMenus().addAll(file, analyze);
         return menuBar;
-    }
-
-    private ScrollPane createGraphDisplay(Graph graph) {
-        Group group = new Group();
-        createTitle(group);
-        createNodes(graph.getNodes(), group);
-        createArrows(group);
-        setPositionsOfNodes(model.getGraphVisualisationDTO().getNodePositionDTOS());
-        setPositionOfArrow(model.getGraphVisualisationDTO().getArrowPositionDTOS());
-        return new ScrollPane(group);
     }
 
     private ScrollPane createGraphDisplay(GraphVisualisationDTO graphDTO) {

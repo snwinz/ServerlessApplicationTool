@@ -15,4 +15,9 @@ public class Analyzer {
         //TODO identify hotspots
 
     }
+
+
+	public Graph getGraph() {
+		return graph;
+	}
 }

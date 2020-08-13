@@ -17,7 +17,7 @@ import javax.xml.bind.Marshaller;
 import java.io.StringWriter;
 import java.util.Arrays;
 
-public class NodeCreatorView extends Dialog {
+public class NodeCreatorView extends Dialog<Object> {
 
     private final NodeCreatorController controller;
     private CoordinatesDTO coordinatesDTO;
@@ -31,7 +31,6 @@ public class NodeCreatorView extends Dialog {
 
         Label typeOfNode = new Label("Type of node: ");
         Label xmlText = new Label("New node as XML (please add relevant information): ");
-        TextField text1 = new TextField();
         ObservableList<String> options =
                 FXCollections.observableArrayList(
                         "Node",

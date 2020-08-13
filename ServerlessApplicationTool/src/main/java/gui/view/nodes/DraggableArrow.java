@@ -24,7 +24,6 @@ public class DraggableArrow extends Group {
     private static final double arrowLength = 20;
     private static final double arrowWidth = 7;
     private final Line line;
-    private DraggableArrow draggableArrowThis = this;
     private model.structure.Arrow alias;
     private GraphVisualisationController controller;
     private final DoubleProperty startXOffset = new SimpleDoubleProperty(0);

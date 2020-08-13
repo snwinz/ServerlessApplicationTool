@@ -8,7 +8,11 @@ import java.util.List;
 @XmlRootElement
 public class Function extends Node {
 
-    private String runtime = "";
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String runtime = "";
     private String handler = "";
     private String policies = "";
     private String functionName = "";

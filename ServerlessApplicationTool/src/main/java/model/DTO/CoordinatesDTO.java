@@ -2,7 +2,11 @@ package model.DTO;
 
 public class CoordinatesDTO extends NodeDTO {
 
-    private final double screenX;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private final double screenX;
     private final double screenY;
 
     public CoordinatesDTO(double screenX, double screenY) {
