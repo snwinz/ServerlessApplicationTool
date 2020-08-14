@@ -153,6 +153,7 @@ public class GraphManipulation {
     private Arrow createArrowFromArrowDTO(ArrowDTO arrowDTO) {
         Arrow resultArrow = new Arrow(graphVisualisationDTO.getGraph().getNodeByName(arrowDTO.getPredecessor()),
                 graphVisualisationDTO.getGraph().getNodeByName(arrowDTO.getSuccessor()));
+        resultArrow.setName(arrowDTO.getName());
         resultArrow.setAccessMode(arrowDTO.getAccessMode());
         resultArrow.setOrder(arrowDTO.getOrder());
         resultArrow.setCondition(arrowDTO.getCondition());

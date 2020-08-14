@@ -1,6 +1,7 @@
 package model.structure;
 
 import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import java.io.Serializable;
@@ -19,9 +20,16 @@ public class Node implements Serializable {
 
     private List<Arrow> outgoingArrows = new LinkedList<>();
 
+   
     private List<Arrow> ingoingArrows = new LinkedList<>();
 
-    public Node() {
+    @XmlIDREF
+    public List<Arrow> getIngoingArrows() {
+		return ingoingArrows;
+	}
+
+
+	public Node() {
     }
 
 
@@ -38,9 +46,9 @@ public class Node implements Serializable {
         return outgoingArrows;
     }
 
-    public List<Arrow> getIngoingArrows() {
-        return ingoingArrows;
-    }
+//    public List<Arrow> getIngoingArrows() {
+//        return ingoingArrows;
+//    }
 
     public void setOutgoingArrows(List<Arrow> outgoingArrows) {
         this.outgoingArrows = outgoingArrows;
@@ -66,7 +74,7 @@ public class Node implements Serializable {
         for (Arrow arrow : outgoingArrows) {
             result.append("Successor: ").append(arrow.getSuccessor().getName()).append(System.lineSeparator());
             result.append("Order: ").append(arrow.getOrder()).append(System.lineSeparator());
-            if (arrow.getAccessMode() != dbAccessmode.NOTSET) {
+            if (arrow.getAccessMode() != DBAccessMode.NOTSET) {
                 result.append("AccessMode: ").append(arrow.getAccessMode()).append(System.lineSeparator());
             }
             if (arrow.isSynchronizedCall()) {
@@ -77,7 +85,7 @@ public class Node implements Serializable {
         for (Arrow arrow : ingoingArrows) {
             result.append("Predecessor: ").append(arrow.getPredecessor().getName()).append(System.lineSeparator());
             result.append("Order: ").append(arrow.getOrder()).append(System.lineSeparator());
-            if (arrow.getAccessMode() != dbAccessmode.NOTSET) {
+            if (arrow.getAccessMode() != DBAccessMode.NOTSET) {
                 result.append("AccessMode: ").append(arrow.getAccessMode()).append(System.lineSeparator());
             }
             if (arrow.isSynchronizedCall()) {

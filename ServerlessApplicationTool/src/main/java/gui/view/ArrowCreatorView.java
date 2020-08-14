@@ -65,6 +65,7 @@ public class ArrowCreatorView extends Dialog<Object> {
 		if (comboBoxSuccessor.getValue() != null) {
 			arrowDTO.setSuccessor(comboBoxSuccessor.getValue());
 		}
+		arrowDTO.updateName();
 		setTextArrow(arrowDTO);
 	}
 

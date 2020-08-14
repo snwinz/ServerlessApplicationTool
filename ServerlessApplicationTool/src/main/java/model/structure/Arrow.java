@@ -1,6 +1,8 @@
 package model.structure;
 
+import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
+
 
 
 public class Arrow {
@@ -10,11 +12,12 @@ public class Arrow {
     private Node successor;
     private String multiplicity = "";
     private String condition = "";
-    private dbAccessmode accessMode = dbAccessmode.NOTSET;
+    private DBAccessMode accessMode = DBAccessMode.NOTSET;
     private int order = -1;
     private boolean synchronizedCall = false;
 
-    private String name;
+    @XmlID
+    private String arrowName;
 
     public Arrow() {
     }
@@ -23,7 +26,7 @@ public class Arrow {
     public Arrow(Node predecessor, Node successor) {
         this.predecessor = predecessor;
         this.successor = successor;
-        this.name = predecessor.getName() + ":" + successor.getName();
+        this.arrowName = predecessor.getName() + ":" + successor.getName();
     }
 
     @XmlIDREF
@@ -68,11 +71,11 @@ public class Arrow {
         this.order = order;
     }
 
-    public dbAccessmode getAccessMode() {
+    public DBAccessMode getAccessMode() {
         return accessMode;
     }
 
-    public void setAccessMode(dbAccessmode accessMode) {
+    public void setAccessMode(DBAccessMode accessMode) {
         this.accessMode = accessMode;
     }
 
@@ -91,19 +94,19 @@ public class Arrow {
     }
 
     public String getName() {
-        return this.name;
+        return this.arrowName;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.arrowName = name;
     }
 
     public String toString() {
-        String result = "Name: " + name + System.lineSeparator();
+        String result = "Name: " + arrowName + System.lineSeparator();
         result += "Predecessor: " + getPredecessor().getName() + System.lineSeparator();
         result += "Successor: " + getSuccessor().getName() + System.lineSeparator();
 
-        if (getAccessMode() != dbAccessmode.NOTSET) {
+        if (getAccessMode() != DBAccessMode.NOTSET) {
             result += "AccessMode: " + getAccessMode() + System.lineSeparator();
         }
         if (isSynchronizedCall()) {

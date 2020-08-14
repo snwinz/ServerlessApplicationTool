@@ -277,7 +277,7 @@ public class Creator {
                 }
                 S3Bucket successor = graph.getS3ByName(dbName);
                 Arrow arrowTmp = new Arrow(predecessor, successor);
-                arrowTmp.setAccessMode(dbAccessmode.READ);
+                arrowTmp.setAccessMode(DBAccessMode.READ);
                 if (depthOfCondition == 0) {
                     arrowTmp.setCondition("");
                 }
@@ -286,10 +286,10 @@ public class Creator {
                     Arrow lastArrow = arrows.get(arrows.size() - 1);
                     if (lastArrow.isUnequal(arrowTmp)) {
 
-                        if ((lastArrow.getAccessMode() == dbAccessmode.WRITE
-                                || lastArrow.getAccessMode() == dbAccessmode.READWRITE)
+                        if ((lastArrow.getAccessMode() == DBAccessMode.WRITE
+                                || lastArrow.getAccessMode() == DBAccessMode.READWRITE)
                                 && lastArrow.getSuccessor() == successor) {
-                            lastArrow.setAccessMode(dbAccessmode.READWRITE);
+                            lastArrow.setAccessMode(DBAccessMode.READWRITE);
                         } else {
                             arrows.add(arrowTmp);
                             order++;
@@ -312,7 +312,7 @@ public class Creator {
                 }
                 S3Bucket successor = graph.getS3ByName(dbName);
                 Arrow arrowTmp = new Arrow(predecessor, successor);
-                arrowTmp.setAccessMode(dbAccessmode.WRITE);
+                arrowTmp.setAccessMode(DBAccessMode.WRITE);
                 if (depthOfCondition == 0) {
                     arrowTmp.setCondition("");
                 }
@@ -321,10 +321,10 @@ public class Creator {
                 if (arrows.size() > 0) {
                     Arrow lastArrow = arrows.get(arrows.size() - 1);
                     if (lastArrow.isUnequal(arrowTmp)) {
-                        if ((lastArrow.getAccessMode() == dbAccessmode.READ
-                                || lastArrow.getAccessMode() == dbAccessmode.READWRITE)
+                        if ((lastArrow.getAccessMode() == DBAccessMode.READ
+                                || lastArrow.getAccessMode() == DBAccessMode.READWRITE)
                                 && lastArrow.getSuccessor() == successor) {
-                            lastArrow.setAccessMode(dbAccessmode.READWRITE);
+                            lastArrow.setAccessMode(DBAccessMode.READWRITE);
                         } else {
                             arrows.add(arrowTmp);
                             order++;
@@ -347,7 +347,7 @@ public class Creator {
                         .replaceAll("\\)", "").trim();
                 DynamoDB successor = graph.getDynamoDBbyName(dbname);
                 Arrow arrowTmp = new Arrow(predecessor, successor);
-                arrowTmp.setAccessMode(dbAccessmode.WRITE);
+                arrowTmp.setAccessMode(DBAccessMode.WRITE);
                 if (depthOfCondition == 0) {
                     arrowTmp.setCondition("");
                 }
@@ -377,7 +377,7 @@ public class Creator {
                         .replaceAll("\\)", "").trim();
                 DynamoDB successor = graph.getDynamoDBbyName(dbname);
                 Arrow arrowTmp = new Arrow(predecessor, successor);
-                arrowTmp.setAccessMode(dbAccessmode.READ);
+                arrowTmp.setAccessMode(DBAccessMode.READ);
                 if (depthOfCondition == 0) {
                     arrowTmp.setCondition("");
                 }
