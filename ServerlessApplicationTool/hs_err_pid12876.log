@@ -1,0 +1,21 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x00007f202e3ff0ad, pid=12876, tid=12931
+#
+# JRE version: OpenJDK Runtime Environment (11.0.8+10) (build 11.0.8+10-post-Ubuntu-0ubuntu120.04)
+# Java VM: OpenJDK 64-Bit Server VM (11.0.8+10-post-Ubuntu-0ubuntu120.04, mixed mode, sharing, tiered, compressed oops, g1 gc, linux-amd64)
+# Problematic frame:
+# C  [libjimage.so+0x30ad]
+#
+# Core dump will be written. Default location: Core dumps may be processed with "/lib/systemd/systemd-coredump %P %u %g %s %t 9223372036854775808 %h" (or dumping to /home/stefan/git/ServerlessApplicationTool/ServerlessApplicationTool/core.12876)
+#
+# If you would like to submit a bug report, please visit:
+#   https://bugs.launchpad.net/ubuntu/+source/openjdk-lts
+#
+
+---------------  S U M M A R Y ------------
+
+Command Line: -agentlib:jdwp=transport=dt_socket,suspend=y,address=localhost:33933 --module-path=/home/stefan/java/javafx-sdk-11.0.2/lib --add-modules=javafx.controls,javafx.fxml -javaagent:/home/stefan/Desktop/eclipse/configuration/org.eclipse.osgi/405/0/.cp/lib/javaagent-shaded.jar -Dfile.encoding=UTF-8 gui.view.MainApp
+
+Host: 

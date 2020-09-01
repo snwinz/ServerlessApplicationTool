@@ -15,12 +15,21 @@ exports.handler = function(event, context, callback) {
     params.Payload = JSON.stringify(payload);
   }
  lambda.invoke(params, function(err, data) {
-    if (err) {
-      callback(err);
-    }
-    else {
-      callback(null, 'Successfully called');
-    }
+       if (err) {
+            console.log(err, err.stack);
+            const response = {
+                statusCode: '500',
+                body: err
+            };
+            callback(null, response);
+        }
+        else {
+            const response = {
+                statusCode: '200',
+                body: 'Successfully called'
+            };
+            callback(null, response);
+        }
   });
 };
 

@@ -34,7 +34,6 @@ public class LogFileSelectionController {
             logFilePath.setText(logFilePathText);
         } catch (
                 IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -61,7 +60,6 @@ public class LogFileSelectionController {
 
     private void savePathsAsDefault() {
         Properties saveProps = new Properties();
-
         try {
             saveProps.loadFromXML(new FileInputStream("settings.xml"));
             saveProps.setProperty("logFilePath", logFilePath.getText());

@@ -8,11 +8,20 @@ exports.handler = function(event, context, callback) {
         Payload: '{ "action" : "nothing" }'
     };
     lambda.invoke(params, function(err, data) {
-        if (err) {
-            callback(err);
+       if (err) {
+            console.log(err, err.stack);
+            const response = {
+                statusCode: '500',
+                body: err
+            };
+            callback(null, response);
         }
         else {
-            callback(null, 'Successfully called');
+            const response = {
+                statusCode: '200',
+                body: 'Successfully called'
+            };
+            callback(null, response);
         }
     });
 };

@@ -3,9 +3,7 @@ package gui.controller;
 import java.io.File;
 import java.util.List;
 
-import gui.view.ArrowCreatorView;
 import gui.view.GraphVisualisationView;
-import gui.view.NodeCreatorView;
 import gui.view.nodes.DraggableArrow;
 import gui.view.nodes.DraggableNode;
 import javafx.stage.FileChooser;

@@ -16,17 +16,20 @@ exports.handler = (event, context, callback) => {
     dynamodb.getItem(params, function(err, data) {
         if (err) {
             console.log(err, err.stack);
-            callback(null, {
+            const response = {
                 statusCode: '500',
                 body: err
-            });
+            };
+            callback(null, response);
         }
         else {
             console.log(data.Item);
-            callback(null, {
+            const response = {
                 statusCode: '200',
-                body: 'Data read '
-            });
+                body: 'Data read: ',
+                data: JSON.stringify(data.Item)            
+            };
+            callback(null, response);
         }
     });
 

@@ -1,11 +1,11 @@
 package model.logic.LogEvaluation;
 
-import model.logic.Instrumentation.InstrumentatorAR;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import model.logic.Instrumentation.Criteria.InstrumentatorAR;
 
 public class StatementEvaluatorAR extends StatementEvaluator {
 

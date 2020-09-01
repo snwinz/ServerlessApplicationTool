@@ -1,9 +1,9 @@
 package model.logic.LogEvaluation;
 
-import model.logic.Instrumentation.InstrumentatorARS;
-
 import java.util.*;
 import java.util.stream.Collectors;
+
+import model.logic.Instrumentation.Criteria.InstrumentatorARS;
 
 public class StatementEvaluatorARS extends StatementEvaluator {
 

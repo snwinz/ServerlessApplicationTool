@@ -23,10 +23,12 @@ exports.handler = (event, context, callback) => {
         }
         else {
             console.log(data.Item);
-            callback(null, {
+            const response = {
                 statusCode: '200',
-                body: 'Data read '
-            });
+                body: 'Data read: ',
+                data: JSON.stringify(data.Item)            
+            };
+            callback(null, response);
         }
     });
 

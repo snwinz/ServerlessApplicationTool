@@ -19,22 +19,23 @@ exports.handler = (event, context, callback) => {
             params.Item.myID.N = event.myID;
         }
 
-        dynamodb.putItem(params, function(err, data) {
-            if (err) {
-                console.log(err, err.stack);
-                callback(null, {
-                    statusCode: '500',
-                    body: err
-                });
-            }
-            else {
-                console.log("Write successful.\n");
-                callback(null, {
-                    statusCode: '200',
-                    body: 'Data written '
-                });
-            }
-        });
+    dynamodb.putItem(params, function(err, data) {
+       if (err) {
+            console.log(err, err.stack);
+            const response = {
+                statusCode: '500',
+                body: err
+            };
+            callback(null, response);
+        }
+        else {
+            const response = {
+                statusCode: '200',
+                body: 'Data written '
+            };
+            callback(null, response);
+        }
+    });
     }
 };
 

@@ -1,0 +1,569 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "The AWS CloudFormation template for this Serverless application",
+  "Resources": {
+    "ServerlessDeploymentBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "AES256"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "ServerlessDeploymentBucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "ServerlessDeploymentBucket"
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Effect": "Deny",
+              "Principal": "*",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "ServerlessDeploymentBucket"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ],
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": false
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "DBGetterUnderscoreARRLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/DBGetter_ARR"
+      }
+    },
+    "DBWriterUnderscoreARRLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/DBWriter_ARR"
+      }
+    },
+    "InvokerUnderscoreARR1LogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/Invoker_ARR1"
+      }
+    },
+    "InvokerUnderscoreARR2LogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/Invoker_ARR2"
+      }
+    },
+    "ProcessorUnderscoreARR1LogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/Processor_ARR1"
+      }
+    },
+    "ProcessorUnderscoreARR2LogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/Processor_ARR2"
+      }
+    },
+    "IamRoleLambdaExecution": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": {
+              "Fn::Join": [
+                "-",
+                [
+                  "allResourceRelations",
+                  "beta",
+                  "lambda"
+                ]
+              ]
+            },
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogStream",
+                    "logs:CreateLogGroup"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/DBGetter_ARR:*"
+                    },
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/DBWriter_ARR:*"
+                    },
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/Invoker_ARR1:*"
+                    },
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/Invoker_ARR2:*"
+                    },
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/Processor_ARR1:*"
+                    },
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/Processor_ARR2:*"
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/DBGetter_ARR:*:*"
+                    },
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/DBWriter_ARR:*:*"
+                    },
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/Invoker_ARR1:*:*"
+                    },
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/Invoker_ARR2:*:*"
+                    },
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/Processor_ARR1:*:*"
+                    },
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/Processor_ARR2:*:*"
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "lambda:InvokeFunction",
+                    "lambda:InvokeAsync",
+                    "dynamodb:PutItem",
+                    "dynamodb:GetItem"
+                  ],
+                  "Resource": "*"
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "dynamodb:GetRecords",
+                    "dynamodb:GetShardIterator",
+                    "dynamodb:DescribeStream",
+                    "dynamodb:ListStreams"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "TableARR",
+                        "StreamArn"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "dynamodb:GetRecords",
+                    "dynamodb:GetShardIterator",
+                    "dynamodb:DescribeStream",
+                    "dynamodb:ListStreams"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "TableARR",
+                        "StreamArn"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "Path": "/",
+        "RoleName": {
+          "Fn::Join": [
+            "-",
+            [
+              "allResourceRelations",
+              "beta",
+              {
+                "Ref": "AWS::Region"
+              },
+              "lambdaRole"
+            ]
+          ]
+        }
+      }
+    },
+    "DBGetterUnderscoreARRLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/allResourceRelations/beta/1598599966870-2020-08-28T07:32:46.870Z/allResourceRelations.zip"
+        },
+        "FunctionName": "DBGetter_ARR",
+        "Handler": "DBGetter_ARR.handler",
+        "MemorySize": 1024,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs12.x",
+        "Timeout": 6
+      },
+      "DependsOn": [
+        "DBGetterUnderscoreARRLogGroup"
+      ]
+    },
+    "DBGetterUnderscoreARRLambdaVersionDNGZ9ULibBMzwD3Ou54ttqCgoTMPfW3AQOJTWneJ84": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "DBGetterUnderscoreARRLambdaFunction"
+        },
+        "CodeSha256": "TouJNa8NpfFnqQixZfi5pnUdpQcfnps9mpx7TNmilEs="
+      }
+    },
+    "DBWriterUnderscoreARRLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/allResourceRelations/beta/1598599966870-2020-08-28T07:32:46.870Z/allResourceRelations.zip"
+        },
+        "FunctionName": "DBWriter_ARR",
+        "Handler": "DBWriter_ARR.handler",
+        "MemorySize": 1024,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs12.x",
+        "Timeout": 6
+      },
+      "DependsOn": [
+        "DBWriterUnderscoreARRLogGroup"
+      ]
+    },
+    "DBWriterUnderscoreARRLambdaVersionOixwHnQaTZ9sQt1lV8qJ2mAuUSZtW3DL0ULw92v8E": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "DBWriterUnderscoreARRLambdaFunction"
+        },
+        "CodeSha256": "TouJNa8NpfFnqQixZfi5pnUdpQcfnps9mpx7TNmilEs="
+      }
+    },
+    "InvokerUnderscoreARR1LambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/allResourceRelations/beta/1598599966870-2020-08-28T07:32:46.870Z/allResourceRelations.zip"
+        },
+        "FunctionName": "Invoker_ARR1",
+        "Handler": "Invoker_ARR1.handler",
+        "MemorySize": 1024,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs12.x",
+        "Timeout": 6
+      },
+      "DependsOn": [
+        "InvokerUnderscoreARR1LogGroup"
+      ]
+    },
+    "InvokerUnderscoreARR1LambdaVersiongUPRFGM2OxmstwIWdmxl7V10QRNRtVtFaYQd7MYKaDg": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "InvokerUnderscoreARR1LambdaFunction"
+        },
+        "CodeSha256": "TouJNa8NpfFnqQixZfi5pnUdpQcfnps9mpx7TNmilEs="
+      }
+    },
+    "InvokerUnderscoreARR2LambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/allResourceRelations/beta/1598599966870-2020-08-28T07:32:46.870Z/allResourceRelations.zip"
+        },
+        "FunctionName": "Invoker_ARR2",
+        "Handler": "Invoker_ARR2.handler",
+        "MemorySize": 1024,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs12.x",
+        "Timeout": 6
+      },
+      "DependsOn": [
+        "InvokerUnderscoreARR2LogGroup"
+      ]
+    },
+    "InvokerUnderscoreARR2LambdaVersionqlRnmHjFU95pCywdkziGjLD6B1hL8ZaOriBSIOL9mw": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "InvokerUnderscoreARR2LambdaFunction"
+        },
+        "CodeSha256": "TouJNa8NpfFnqQixZfi5pnUdpQcfnps9mpx7TNmilEs="
+      }
+    },
+    "ProcessorUnderscoreARR1LambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/allResourceRelations/beta/1598599966870-2020-08-28T07:32:46.870Z/allResourceRelations.zip"
+        },
+        "FunctionName": "Processor_ARR1",
+        "Handler": "Processor_ARR1.handler",
+        "MemorySize": 1024,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs12.x",
+        "Timeout": 6
+      },
+      "DependsOn": [
+        "ProcessorUnderscoreARR1LogGroup"
+      ]
+    },
+    "ProcessorUnderscoreARR1LambdaVersioni0O2iuEQVZPjTFbDSC3qPYbe0CUoUeufanvD3uGWoQU": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "ProcessorUnderscoreARR1LambdaFunction"
+        },
+        "CodeSha256": "TouJNa8NpfFnqQixZfi5pnUdpQcfnps9mpx7TNmilEs="
+      }
+    },
+    "ProcessorUnderscoreARR2LambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/allResourceRelations/beta/1598599966870-2020-08-28T07:32:46.870Z/allResourceRelations.zip"
+        },
+        "FunctionName": "Processor_ARR2",
+        "Handler": "Processor_ARR2.handler",
+        "MemorySize": 1024,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs12.x",
+        "Timeout": 6
+      },
+      "DependsOn": [
+        "ProcessorUnderscoreARR2LogGroup"
+      ]
+    },
+    "ProcessorUnderscoreARR2LambdaVersionM4lEHM0zdttvlEAhUQba5Cf2N1ZePI4QkF0Sk5SyY": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "ProcessorUnderscoreARR2LambdaFunction"
+        },
+        "CodeSha256": "TouJNa8NpfFnqQixZfi5pnUdpQcfnps9mpx7TNmilEs="
+      }
+    },
+    "ProcessorUnderscoreARR1EventSourceMappingDynamodbTableARR": {
+      "Type": "AWS::Lambda::EventSourceMapping",
+      "DependsOn": "IamRoleLambdaExecution",
+      "Properties": {
+        "BatchSize": 10,
+        "EventSourceArn": {
+          "Fn::GetAtt": [
+            "TableARR",
+            "StreamArn"
+          ]
+        },
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "ProcessorUnderscoreARR1LambdaFunction",
+            "Arn"
+          ]
+        },
+        "StartingPosition": "TRIM_HORIZON",
+        "Enabled": true,
+        "MaximumRetryAttempts": 3
+      }
+    },
+    "ProcessorUnderscoreARR2EventSourceMappingDynamodbTableARR": {
+      "Type": "AWS::Lambda::EventSourceMapping",
+      "DependsOn": "IamRoleLambdaExecution",
+      "Properties": {
+        "BatchSize": 10,
+        "EventSourceArn": {
+          "Fn::GetAtt": [
+            "TableARR",
+            "StreamArn"
+          ]
+        },
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "ProcessorUnderscoreARR2LambdaFunction",
+            "Arn"
+          ]
+        },
+        "StartingPosition": "TRIM_HORIZON",
+        "Enabled": true,
+        "MaximumRetryAttempts": 3
+      }
+    },
+    "TableARR": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": "Table_ARR",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "myID",
+            "AttributeType": "N"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "myID",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 1,
+          "WriteCapacityUnits": 1
+        },
+        "StreamSpecification": {
+          "StreamViewType": "NEW_AND_OLD_IMAGES"
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "ServerlessDeploymentBucketName": {
+      "Value": {
+        "Ref": "ServerlessDeploymentBucket"
+      }
+    },
+    "DBGetterUnderscoreARRLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "DBGetterUnderscoreARRLambdaVersionDNGZ9ULibBMzwD3Ou54ttqCgoTMPfW3AQOJTWneJ84"
+      }
+    },
+    "DBWriterUnderscoreARRLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "DBWriterUnderscoreARRLambdaVersionOixwHnQaTZ9sQt1lV8qJ2mAuUSZtW3DL0ULw92v8E"
+      }
+    },
+    "InvokerUnderscoreARR1LambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "InvokerUnderscoreARR1LambdaVersiongUPRFGM2OxmstwIWdmxl7V10QRNRtVtFaYQd7MYKaDg"
+      }
+    },
+    "InvokerUnderscoreARR2LambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "InvokerUnderscoreARR2LambdaVersionqlRnmHjFU95pCywdkziGjLD6B1hL8ZaOriBSIOL9mw"
+      }
+    },
+    "ProcessorUnderscoreARR1LambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "ProcessorUnderscoreARR1LambdaVersioni0O2iuEQVZPjTFbDSC3qPYbe0CUoUeufanvD3uGWoQU"
+      }
+    },
+    "ProcessorUnderscoreARR2LambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "ProcessorUnderscoreARR2LambdaVersionM4lEHM0zdttvlEAhUQba5Cf2N1ZePI4QkF0Sk5SyY"
+      }
+    }
+  }
+}
