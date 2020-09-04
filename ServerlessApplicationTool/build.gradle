@@ -1,0 +1,34 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.8'
+    id 'maven'
+}
+group = 'de.uni-bamberg.pi'
+version = '0.0.1-SNAPSHOT'
+
+description = """modelgenerator"""
+
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
+
+
+repositories {
+    jcenter()
+}
+dependencies {
+    compile group: 'javax.xml.bind', name: 'jaxb-api', version:'2.3.0-b170201.1204'
+    compile group: 'javax.activation', name: 'activation', version:'1.1.1'
+    compile group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version:'2.3.0-b170127.1453'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version:'2.10.0.pr1'
+    testCompile group: 'junit', name: 'junit', version:'3.8.1'
+}
+
+javafx {
+    version = "14"
+    modules = [ 'javafx.base', 'javafx.controls', 'javafx.fxml' ]
+}
+
+mainClassName = 'gui.view.MainApp'

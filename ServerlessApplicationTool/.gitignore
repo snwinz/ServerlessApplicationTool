@@ -12,4 +12,9 @@
 log/
 target/
 
+### Gradle ###
+.gradle
+/build/
+
 settings.xml
+/.gradle/
