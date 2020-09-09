@@ -12,32 +12,29 @@ import model.logic.Instrumentation.Criteria.InstrumentatorARR;
 import model.logic.Instrumentation.Criteria.InstrumentatorARS;
 import model.logic.Instrumentation.Criteria.InstrumentatorDefs;
 import model.logic.Instrumentation.Criteria.InstrumentatorUses;
-import model.logic.Instrumentation.fileData.SourceFile;
 import model.logic.Instrumentation.logic.InstrumentationController;
 
 public class Instrumentator {
 
 	private List<CoverageMode> coverageModes = new ArrayList<CoverageMode>();
 	public final List<CoverageCriterion> selectedCoverageModes = new LinkedList<>();
-	private SourceFile sourceFile;
 
 	public void addCoverageMode(CoverageMode mode) {
 		coverageModes.add(mode);
 	}
 
-	public List<String> instrument(Path file) {
-		List<String> allLinesOfFile = new ArrayList<String>();
+	public void instrument(Path file) {
 		try {
-			allLinesOfFile = Files.readAllLines(file);
-			sourceFile = new SourceFile(allLinesOfFile);
-			instrumentAllResources();
-			allLinesOfFile = sourceFile.getSourceWithInstrumentation();
+			InstrumentationController instrumentation = new InstrumentationController();
+			String instrumentedFileText = instrumentation.instrumentWithAntlr(file.toAbsolutePath().toString(),
+					selectedCoverageModes);
+			saveInstrumentedFile(instrumentedFileText, file);
 		} catch (IOException e) {
-			System.err.format("file %s could not be read.%n", file.toString());
+			System.err.format("file %s could not be saved or read: %n", file.toString());
 		}
-
-		return allLinesOfFile;
 	}
+
+
 
 	private void addInstrumentors() {
 		for (CoverageMode mode : coverageModes) {
@@ -68,13 +65,6 @@ public class Instrumentator {
 		this.selectedCoverageModes.add(mode);
 	}
 
-	public void instrumentAllResources() {
-		for (CoverageCriterion instrumentator : selectedCoverageModes) {
-			InstrumentationController instrumentation = new InstrumentationController(sourceFile);
-			instrumentation.instrument(instrumentator);
-		}
-	}
-
 	public void instrumentFilesOfFolder(String directoryToSourceCodeOfFunctions) {
 		addInstrumentors();
 		if (!isFolderAvailable(directoryToSourceCodeOfFunctions)) {
@@ -85,16 +75,12 @@ public class Instrumentator {
 			System.out.println(mode);
 		}
 		System.out.println();
-
-		Path folderOfInstrumentedFunctions = createFolderForResult(directoryToSourceCodeOfFunctions);
-
 		try (DirectoryStream<Path> directoryStreamFunctions = Files
 				.newDirectoryStream(Paths.get(directoryToSourceCodeOfFunctions), "*.{js}")) {
 			for (Path file : directoryStreamFunctions) {
 
 				System.out.println(file.toString());
-				List<String> instrumentedFile = instrument(file);
-				saveInstrumentedFile(instrumentedFile, folderOfInstrumentedFunctions, file.getFileName().toString());
+				instrument(file);
 			}
 		} catch (IOException ex) {
 			ex.printStackTrace();
@@ -108,22 +94,25 @@ public class Instrumentator {
 		return Files.exists(path) && Files.isDirectory(path);
 	}
 
-	private static void saveInstrumentedFile(List<String> instrumentedSourceCode, Path folderOfInstrumentedFunctions,
-			String fileName) {
-		Path instrumentedFile = Paths.get(folderOfInstrumentedFunctions.toAbsolutePath() + "/" + fileName);
+
+	
+	private void saveInstrumentedFile(String instrumentedFileText, Path path) {
+		Path folderOfInstrumentedFunctions = createFolderForResult(path.getParent().toString());
+		Path instrumentedFile = Paths.get(folderOfInstrumentedFunctions.toAbsolutePath() + "/" + path.getFileName().toString());
 		System.out.println(instrumentedFile.getFileName());
 
 		try {
-			Files.write(instrumentedFile, instrumentedSourceCode, StandardOpenOption.CREATE,
+			Files.writeString(instrumentedFile, instrumentedFileText, StandardOpenOption.CREATE,
 					StandardOpenOption.TRUNCATE_EXISTING);
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println("Could not write result of file " +  path.toAbsolutePath());
 		}
-
+		
 	}
+	
 
-	private static Path createFolderForResult(String directoryToSourceCodeOfFunctions) {
-		Path dirPathObj = Paths.get(directoryToSourceCodeOfFunctions + "/" + "instrumentedFunctions");
+	private Path createFolderForResult(String directoryToSourceCodeOfFunctions) {
+		Path dirPathObj = Paths.get(directoryToSourceCodeOfFunctions + "/" + "instrumentedFunctionsWithAntlr");
 		boolean dirExists = Files.exists(dirPathObj);
 		if (dirExists) {
 			System.out.println("! Directory Already Exists !");

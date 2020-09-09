@@ -1,28 +1,27 @@
 package model.logic.Instrumentation.Criteria;
 
-import model.logic.Instrumentation.fileData.LineContainer;
-
 public interface CoverageCriterion {
-	void addCoverageStatementsHandler(LineContainer enrichedLine, String event);
 
-	void addCoverageStatementsInvocation(LineContainer line, String param, String returnValue);
+	String addCoverageStatementsHandler(String event);
 
-	void addCoverageStatementDBisRead(LineContainer enrichedLine, String parameter, String returnValue);
+	String addCoverageStatementsInvocation(String lambdaParameter, String returnParameter);
 
-	void addCoverageStatementDBisWritten(LineContainer line, String param);
+	String addCoverageStatementDBisRead(String parameter, String returnValue);
 
-	void addCoverageStatementsReturn(LineContainer line, String variable);
-	
-	void addDefOfInvocationVar(LineContainer enrichedLine, String defVar);
+	String addCoverageStatementDBisWritten(String param);
 
-	void addDefOfWrites(LineContainer lastLine, String defVar);
+	String addCoverageStatementsReturn(String variable);
 
-	void addDefOfReturns(LineContainer lastLine, String defVar);
+	String addDefOfInvocationVar(String defVar);
 
-	void addUseOfEvents(LineContainer line, String useVar);
+	String addDefOfWrites(String defVar);
 
-	void addUseOfReturn(LineContainer line, String useVar);
+	String addDefOfReturns(String defVar);
 
-	void addUseOfReads(LineContainer line, String useVar);
+	String addUseOfEvents(String useVar);
+
+	String addUseOfReturn(String useVar);
+
+	String addUseOfReads(String useVar);
 
 }

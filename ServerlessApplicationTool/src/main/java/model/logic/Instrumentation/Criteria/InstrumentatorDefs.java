@@ -1,7 +1,5 @@
 package model.logic.Instrumentation.Criteria;
 
-import model.logic.Instrumentation.fileData.LineContainer;
-
 public class InstrumentatorDefs implements CoverageCriterion {
 
 	public final static String marker = "#ARD_";
@@ -18,89 +16,105 @@ public class InstrumentatorDefs implements CoverageCriterion {
 	public final static String databaseUseReadMarker = marker + "DBRU_";
 	public final static String functionStartUseMarker = marker + "SU_";
 
+	private int idCounterDef = 0;
+	
+	
 	@Override
-	public void addCoverageStatementsHandler(LineContainer enrichedLine, String event) {
+	public String addCoverageStatementsHandler( String event) {
 		String logLine = String.format("          console.log('%s' + context.functionName + '_%s');",
 				functionStartMarker, event);
-		enrichedLine.addPostLine(logLine);
+		return logLine;
 	}
 
+
 	@Override
-	public void addCoverageStatementsInvocation(LineContainer enrichedLine, String var, String returnValue) {
+	public String addCoverageStatementsInvocation(String var, String returnValue) {
 		String logLine = String.format("          console.log('%s' + context.functionName + '_%s');",
 				functionInvocationMarker, returnValue);
-		enrichedLine.addPreLine(logLine);
+		return logLine;
 	}
+	
+
 
 	@Override
-	public void addCoverageStatementDBisRead(LineContainer line, String param, String returnValue) {
+	public String addCoverageStatementDBisRead(String param, String returnValue) {
 		String logLine = String.format("          console.log('%s' + context.functionName + '_%s');",
 				databaseReadMarker, returnValue);
-		line.addPreLine(logLine);
+		return logLine;
 	}
 
-
+	
+	
 	@Override
-	public void addCoverageStatementDBisWritten(LineContainer enrichedLine, String var) {
+	public String addCoverageStatementDBisWritten(String var) {
+		return "";
 	}
 
+	
 	@Override
-	public void addCoverageStatementsReturn(LineContainer line, String variable) {
+	public String addCoverageStatementsReturn(String variable) {
+		return "";
 	}
 
+	
 	@Override
-	public void addDefOfInvocationVar(LineContainer enrichedLine, String defVar) {
+	public String addDefOfInvocationVar(String defVar) {
 		String logLine = String.format(
-				"    %s.Payload = %s.Payload.replace('\\{','{\"funcDef\" : \"' + context.functionName + '_%s_line%s\",');%n"
+				"    %s.Payload = %s.Payload.replace('\\{','{\"funcDef\" : \"' + context.functionName + '_%s_%s\",');%n"
 						+ "    console.log('%s' + JSON.parse(%s.Payload).funcDef + ' ');",
-				defVar, defVar, defVar, enrichedLine.getLineNumber(), functionInvocationMarkerDef, defVar);
-		enrichedLine.addPostLine(logLine);
+				defVar, defVar, defVar, idCounterDef++, functionInvocationMarkerDef, defVar);
+		return logLine;
 	}
 
+
 	@Override
-	public void addDefOfWrites(LineContainer lastLine, String defVar) {
+	public String addDefOfWrites(String defVar) {
 		String logLine = String.format(
-				"          %s.Item.funcDef = {S:  context.functionName + '_%s_line%s'};%n"
+				"          %s.Item.funcDef = {S:  context.functionName + '_%s_%s'};%n"
 						+ "          console.log('%s' + %s.Item.funcDef.S + ' ');",
-				defVar, defVar, lastLine.getLineNumber(), databaseWriterMarkerDef, defVar);
-		lastLine.addPostLine(logLine);
+				defVar, defVar, idCounterDef++, databaseWriterMarkerDef, defVar);
+		return logLine;
 	}
 
+	
+	
 	@Override
-	public void addDefOfReturns(LineContainer lastLine, String defVar) {
+	public String addDefOfReturns(String defVar) {
 		String logLine = String.format(
-				"    %s.returnDef = context.functionName + '_%s_line%s';%n"
+				"    %s.returnDef = context.functionName + '_%s_%s';%n"
 						+ "    console.log('%s' + (%s.returnDef) + ' ');",
-				defVar, defVar, lastLine.getLineNumber(), returnMarkerDef, defVar);
-		lastLine.addPostLine(logLine);
+				defVar, defVar, idCounterDef++, returnMarkerDef, defVar);
+		return logLine;
 	}
 
+	
 	@Override
-	public void addUseOfEvents(LineContainer line, String useVar) {
+	public String addUseOfEvents(String useVar) {
 		String logLine = String.format(
 				"   if (event.funcDef != undefined) {%n" + "     console.log('%s' + event.funcDef + '_%s');%n" + "   } ",
 				functionStartUseMarker, useVar);
-		line.addPreLine(logLine);
+		return logLine;
 	}
 
+
 	@Override
-	public void addUseOfReturn(LineContainer line, String useVar) {
+	public String addUseOfReturn(String useVar) {
 		String logLine = String.format(
 				"   if (%s.Payload != undefined) {%n" + 
 		"     var answerOfReturn = JSON.parse(%s.Payload).returnDef;%n" +
 		"     console.log('%s' + answerOfReturn + '_%s');%n" + "   } ",
 				useVar, useVar, returnUseMarker, useVar);
-		line.addPreLine(logLine);
+		return logLine;
 	}
-
+	
+	
 	@Override
-	public void addUseOfReads(LineContainer line, String useVar) {
+	public String addUseOfReads(String useVar) {
 		String logLine = String.format("if (%s != undefined) {%n" + "        if (%s.Item != undefined) {%n"
 				+ "            const definition = %s.Item.funcDef;%n" + "            if (definition != undefined) {%n"
 				+ "                console.log('%s' + definition.S + '_%s');%n" + "            }%n" + "        }%n"
 				+ "    }", useVar, useVar, useVar, databaseUseReadMarker, useVar);
 
-		line.addPreLine(logLine);
+		return logLine;
 	}
-
 }
