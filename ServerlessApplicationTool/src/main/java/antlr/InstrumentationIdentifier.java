@@ -148,19 +148,19 @@ public class InstrumentationIdentifier<T> extends JavaScriptParserBaseVisitor<T>
 	}
 
 	private void addUsesForEvents(IdentifierContext ctx, String useVar) {
-		String logLine = createLinesForUsesOfEvents(useVar);
+		String logLine = createLinesForUsesOfEvents(useVar, ctx.start.getLine());
 		StatementContext statement = GraphHelper.getStatementOfContext(ctx);
 		rewriter.insertBefore(statement.start, logLine);
 	}
 
 	private void addUsesForRead(IdentifierContext ctx, String useVar) {
-		String logLine = createLinesForUsesOfReads(useVar);
+		String logLine = createLinesForUsesOfReads(useVar, ctx.start.getLine());
 		StatementContext statement = GraphHelper.getStatementOfContext(ctx);
 		rewriter.insertBefore(statement.start, logLine);
 	}
 
 	private void addUsesForReturns(IdentifierContext ctx, String useVar) {
-		String logLine = createLinesForUsesOfReturns(useVar);
+		String logLine = createLinesForUsesOfReturns(useVar, ctx.start.getLine());
 		StatementContext statement = GraphHelper.getStatementOfContext(ctx);
 		rewriter.insertBefore(statement.start, logLine);
 	}
@@ -169,7 +169,7 @@ public class InstrumentationIdentifier<T> extends JavaScriptParserBaseVisitor<T>
 		if (potentialDefs.containsKey(writeParameter)) {
 			Set<StatementContext> defsToBeInstrumented = potentialDefs.get(writeParameter);
 			for (StatementContext statement : defsToBeInstrumented) {
-				String logLine = createLinesForDefsForWrites(writeParameter);
+				String logLine = createLinesForDefsForWrites(writeParameter, statement.start.getLine());
 				rewriter.insertAfter(statement.stop, logLine);
 			}
 		}
@@ -179,7 +179,7 @@ public class InstrumentationIdentifier<T> extends JavaScriptParserBaseVisitor<T>
 		if (potentialDefs.containsKey(lambdaParameter)) {
 			Set<StatementContext> defsToBeInstrumented = potentialDefs.get(lambdaParameter);
 			for (StatementContext statement : defsToBeInstrumented) {
-				String logLine = createLinesForDefsForInvocations(lambdaParameter);
+				String logLine = createLinesForDefsForInvocations(lambdaParameter, statement.start.getLine());
 				rewriter.insertAfter(statement.stop, logLine);
 
 			}
@@ -190,7 +190,7 @@ public class InstrumentationIdentifier<T> extends JavaScriptParserBaseVisitor<T>
 		if (potentialDefs.containsKey(parameterOfReturn)) {
 			Set<StatementContext> defsToBeInstrumented = potentialDefs.get(parameterOfReturn);
 			for (StatementContext statement : defsToBeInstrumented) {
-				String logLine = createLinesForDefsOfReturns(parameterOfReturn);
+				String logLine = createLinesForDefsOfReturns(parameterOfReturn, statement.start.getLine());
 				rewriter.insertAfter(statement.stop, logLine);
 			}
 		}
@@ -248,12 +248,12 @@ public class InstrumentationIdentifier<T> extends JavaScriptParserBaseVisitor<T>
 		return comment.toString();
 	}
 
-	private String createLinesForDefsForWrites(String writeParameter) {
+	private String createLinesForDefsForWrites(String writeParameter, int line) {
 		StringBuilder result = new StringBuilder();
 		String startComment = "Def write start";
 
 		for (CoverageCriterion criterion : criteria) {
-			result.append(criterion.addDefOfWrites(writeParameter));
+			result.append(criterion.addDefOfWrites(writeParameter, line));
 		}
 		String endCommend = "Def write end";
 
@@ -262,12 +262,12 @@ public class InstrumentationIdentifier<T> extends JavaScriptParserBaseVisitor<T>
 		return comment.toString();
 	}
 
-	private String createLinesForDefsForInvocations(String lambdaParameter) {
+	private String createLinesForDefsForInvocations(String lambdaParameter, int line) {
 		StringBuilder result = new StringBuilder();
 		String startComment = "Def invocation start";
 
 		for (CoverageCriterion criterion : criteria) {
-			result.append(criterion.addDefOfInvocationVar(lambdaParameter));
+			result.append(criterion.addDefOfInvocationVar(lambdaParameter, line));
 		}
 		String endCommend = "Def invocation end";
 
@@ -276,12 +276,12 @@ public class InstrumentationIdentifier<T> extends JavaScriptParserBaseVisitor<T>
 		return comment.toString();
 	}
 
-	private String createLinesForDefsOfReturns(String defVar) {
+	private String createLinesForDefsOfReturns(String defVar, int line) {
 		StringBuilder result = new StringBuilder();
 		String startComment = "Def return start";
 
 		for (CoverageCriterion criterion : criteria) {
-			result.append(criterion.addDefOfReturns(defVar));
+			result.append(criterion.addDefOfReturns(defVar, line));
 		}
 		String endCommend = "Def return end";
 
@@ -290,11 +290,11 @@ public class InstrumentationIdentifier<T> extends JavaScriptParserBaseVisitor<T>
 		return comment.toString();
 	}
 
-	private String createLinesForUsesOfReads(String useVar) {
+	private String createLinesForUsesOfReads(String useVar, int line) {
 		StringBuilder result = new StringBuilder();
 		String startComment = "Use read start";
 		for (CoverageCriterion criterion : criteria) {
-			result.append(criterion.addUseOfReads(useVar));
+			result.append(criterion.addUseOfReads(useVar, line));
 		}
 		String endCommend = "Use read end";
 
@@ -303,11 +303,11 @@ public class InstrumentationIdentifier<T> extends JavaScriptParserBaseVisitor<T>
 		return comment.toString();
 	}
 
-	private String createLinesForUsesOfEvents(String useVar) {
+	private String createLinesForUsesOfEvents(String useVar, int line) {
 		StringBuilder result = new StringBuilder();
 		String startComment = "Use event start";
 		for (CoverageCriterion criterion : criteria) {
-			result.append(criterion.addUseOfEvents(useVar));
+			result.append(criterion.addUseOfEvents(useVar, line));
 		}
 		String endCommend = "Use event end";
 
@@ -316,11 +316,11 @@ public class InstrumentationIdentifier<T> extends JavaScriptParserBaseVisitor<T>
 		return comment.toString();
 	}
 
-	private String createLinesForUsesOfReturns(String useVar) {
+	private String createLinesForUsesOfReturns(String useVar, int line) {
 		StringBuilder result = new StringBuilder();
 		String startComment = "Use return start";
 		for (CoverageCriterion criterion : criteria) {
-			result.append(criterion.addUseOfReturn(useVar));
+			result.append(criterion.addUseOfReturn(useVar, line));
 		}
 		String endCommend = "Use return end";
 		String logLine = result.toString();

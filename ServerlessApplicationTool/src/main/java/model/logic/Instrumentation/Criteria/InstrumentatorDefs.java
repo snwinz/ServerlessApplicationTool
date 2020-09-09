@@ -16,7 +16,6 @@ public class InstrumentatorDefs implements CoverageCriterion {
 	public final static String databaseUseReadMarker = marker + "DBRU_";
 	public final static String functionStartUseMarker = marker + "SU_";
 
-	private int idCounterDef = 0;
 	
 	
 	@Override
@@ -58,38 +57,38 @@ public class InstrumentatorDefs implements CoverageCriterion {
 
 	
 	@Override
-	public String addDefOfInvocationVar(String defVar) {
+	public String addDefOfInvocationVar(String defVar, int line) {
 		String logLine = String.format(
-				"    %s.Payload = %s.Payload.replace('\\{','{\"funcDef\" : \"' + context.functionName + '_%s_%s\",');%n"
+				"    %s.Payload = %s.Payload.replace('\\{','{\"funcDef\" : \"' + context.functionName + '_%s_line%s\",');%n"
 						+ "    console.log('%s' + JSON.parse(%s.Payload).funcDef + ' ');",
-				defVar, defVar, defVar, idCounterDef++, functionInvocationMarkerDef, defVar);
+				defVar, defVar, defVar, line, functionInvocationMarkerDef, defVar);
 		return logLine;
 	}
 
 
 	@Override
-	public String addDefOfWrites(String defVar) {
+	public String addDefOfWrites(String defVar, int line) {
 		String logLine = String.format(
-				"          %s.Item.funcDef = {S:  context.functionName + '_%s_%s'};%n"
+				"          %s.Item.funcDef = {S:  context.functionName + '_%s_line%s'};%n"
 						+ "          console.log('%s' + %s.Item.funcDef.S + ' ');",
-				defVar, defVar, idCounterDef++, databaseWriterMarkerDef, defVar);
+				defVar, defVar, line, databaseWriterMarkerDef, defVar);
 		return logLine;
 	}
 
 	
 	
 	@Override
-	public String addDefOfReturns(String defVar) {
+	public String addDefOfReturns(String defVar, int line) {
 		String logLine = String.format(
-				"    %s.returnDef = context.functionName + '_%s_%s';%n"
+				"    %s.returnDef = context.functionName + '_%s_line%s';%n"
 						+ "    console.log('%s' + (%s.returnDef) + ' ');",
-				defVar, defVar, idCounterDef++, returnMarkerDef, defVar);
+				defVar, defVar, line, returnMarkerDef, defVar);
 		return logLine;
 	}
 
 	
 	@Override
-	public String addUseOfEvents(String useVar) {
+	public String addUseOfEvents(String useVar, int line) {
 		String logLine = String.format(
 				"   if (event.funcDef != undefined) {%n" + "     console.log('%s' + event.funcDef + '_%s');%n" + "   } ",
 				functionStartUseMarker, useVar);
@@ -98,7 +97,7 @@ public class InstrumentatorDefs implements CoverageCriterion {
 
 
 	@Override
-	public String addUseOfReturn(String useVar) {
+	public String addUseOfReturn(String useVar, int line) {
 		String logLine = String.format(
 				"   if (%s.Payload != undefined) {%n" + 
 		"     var answerOfReturn = JSON.parse(%s.Payload).returnDef;%n" +
@@ -109,7 +108,7 @@ public class InstrumentatorDefs implements CoverageCriterion {
 	
 	
 	@Override
-	public String addUseOfReads(String useVar) {
+	public String addUseOfReads(String useVar, int line) {
 		String logLine = String.format("if (%s != undefined) {%n" + "        if (%s.Item != undefined) {%n"
 				+ "            const definition = %s.Item.funcDef;%n" + "            if (definition != undefined) {%n"
 				+ "                console.log('%s' + definition.S + '_%s');%n" + "            }%n" + "        }%n"

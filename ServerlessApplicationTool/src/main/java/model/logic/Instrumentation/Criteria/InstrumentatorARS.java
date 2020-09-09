@@ -138,36 +138,36 @@ public class InstrumentatorARS implements CoverageCriterion {
     
 	
 	@Override
-	public String addDefOfInvocationVar(String defVar) {
+	public String addDefOfInvocationVar(String defVar, int line) {
 		return "";
 	}
 
 
 	@Override
-	public String addDefOfWrites(String defVar) {
-		return "";
-	}
-	
-	@Override
-	public String addDefOfReturns(String defVar) {
-		return "";
-	}
-
-
-	@Override
-	public String addUseOfEvents(String useVar) {
+	public String addDefOfWrites(String defVar, int line) {
 		return "";
 	}
 	
-	
 	@Override
-	public String addUseOfReturn(String useVar) {
+	public String addDefOfReturns(String defVar, int line) {
 		return "";
 	}
 
 
 	@Override
-	public String addUseOfReads(String useVar) {
+	public String addUseOfEvents(String useVar, int line) {
+		return "";
+	}
+	
+	
+	@Override
+	public String addUseOfReturn(String useVar, int line) {
+		return "";
+	}
+
+
+	@Override
+	public String addUseOfReads(String useVar, int line) {
 		return "";
 	}
 

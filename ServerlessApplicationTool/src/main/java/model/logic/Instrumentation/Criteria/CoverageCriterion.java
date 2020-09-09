@@ -12,16 +12,16 @@ public interface CoverageCriterion {
 
 	String addCoverageStatementsReturn(String variable);
 
-	String addDefOfInvocationVar(String defVar);
+	String addDefOfInvocationVar(String defVar, int line);
 
-	String addDefOfWrites(String defVar);
+	String addDefOfWrites(String defVar, int line);
 
-	String addDefOfReturns(String defVar);
+	String addDefOfReturns(String defVar, int line);
 
-	String addUseOfEvents(String useVar);
+	String addUseOfEvents(String useVar, int line);
 
-	String addUseOfReturn(String useVar);
+	String addUseOfReturn(String useVar, int line);
 
-	String addUseOfReads(String useVar);
+	String addUseOfReads(String useVar, int line);
 
 }
