@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.TokenStreamRewriter;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -85,6 +86,26 @@ public class InstrumentationIdentifier<T> extends JavaScriptParserBaseVisitor<T>
 			}
 		}
 
+		String dbDeleteFunctionName = "deleteItem";
+		if (ctx.getText().contains(dbDeleteFunctionName)) {
+			if (GraphHelper.checkIfFunctionIsInvoked(ctx, dbDeleteFunctionName)) {
+				ArgumentContext deleteParameter = GraphHelper.getFirstArgument(ctx);
+				if (deleteParameter != null) {
+
+					if (isDeleteInstrumented()) {
+						addDefsForDelete(deleteParameter.getText());
+						ParserRuleContext functionNode = (ParserRuleContext) GraphHelper.getFunctionExpression(ctx,
+								dbDeleteFunctionName);
+						if (functionNode != null) {
+							rewriter.replace(functionNode.start, functionNode.stop, "putItem");
+						} else {
+							System.err.println("Delete could not be replaced");
+						}
+					}
+				}
+			}
+		}
+
 		if (ctx.getText().startsWith("callback")) {
 			if (GraphHelper.isStatementCallback(ctx)) {
 				ArgumentContext returnVariable = GraphHelper.getSecondArgument(ctx, false);
@@ -94,6 +115,10 @@ public class InstrumentationIdentifier<T> extends JavaScriptParserBaseVisitor<T>
 			}
 		}
 		return super.visitStatement(ctx);
+	}
+
+	private boolean isDeleteInstrumented() {
+		return criteria.stream().anyMatch(criterion -> criterion.isDeletionInstrumentation());
 	}
 
 	public T visitReturnStatement(JavaScriptParser.ReturnStatementContext ctx) {
@@ -172,6 +197,26 @@ public class InstrumentationIdentifier<T> extends JavaScriptParserBaseVisitor<T>
 				String logLine = createLinesForDefsForWrites(writeParameter, statement.start.getLine());
 				rewriter.insertAfter(statement.stop, logLine);
 			}
+		}
+	}
+
+	private void addDefsForDelete(String deleteParameter) {
+		if (potentialDefs.containsKey(deleteParameter)) {
+			Set<StatementContext> defsToBeInstrumented = potentialDefs.get(deleteParameter);
+			for (StatementContext statement : defsToBeInstrumented) {
+				replaceKeyWithItem(statement, deleteParameter);
+				String logLine = createLinesForDefsForDeletes(deleteParameter, statement.start.getLine());
+				rewriter.insertAfter(statement.stop, logLine);
+			}
+		}
+
+	}
+
+	private void replaceKeyWithItem(StatementContext statement, String deleteParameter) {
+		if (statement.getText().contains(deleteParameter + "." + "Key")) {
+			String insertText = statement.getText();
+			insertText = insertText.replace("Key", "Item");
+			rewriter.replace(statement.start, statement.stop, insertText);
 		}
 	}
 
@@ -262,6 +307,20 @@ public class InstrumentationIdentifier<T> extends JavaScriptParserBaseVisitor<T>
 		return comment.toString();
 	}
 
+	private String createLinesForDefsForDeletes(String deleteParameter, int line) {
+		StringBuilder result = new StringBuilder();
+		String startComment = "Def delete start";
+
+		for (CoverageCriterion criterion : criteria) {
+			result.append(criterion.addDefOfDeletes(deleteParameter, line));
+		}
+		String endCommend = "Def delete end";
+
+		String logLine = result.toString();
+		Comment comment = new Comment(startComment, endCommend, logLine);
+		return comment.toString();
+	}
+
 	private String createLinesForDefsForInvocations(String lambdaParameter, int line) {
 		StringBuilder result = new StringBuilder();
 		String startComment = "Def invocation start";
@@ -327,4 +386,5 @@ public class InstrumentationIdentifier<T> extends JavaScriptParserBaseVisitor<T>
 		Comment comment = new Comment(startComment, endCommend, logLine);
 		return comment.toString();
 	}
+
 }

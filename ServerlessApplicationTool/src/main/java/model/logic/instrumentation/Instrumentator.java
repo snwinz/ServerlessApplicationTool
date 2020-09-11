@@ -1,7 +1,11 @@
 package model.logic.instrumentation;
 
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,10 +21,15 @@ import model.logic.Instrumentation.logic.InstrumentationController;
 public class Instrumentator {
 
 	private List<CoverageMode> coverageModes = new ArrayList<CoverageMode>();
+	private List<CoverageOption> coverageOptions = new ArrayList<CoverageOption>();
 	public final List<CoverageCriterion> selectedCoverageModes = new LinkedList<>();
 
 	public void addCoverageMode(CoverageMode mode) {
 		coverageModes.add(mode);
+	}
+
+	public void addCoverageOption(CoverageOption option) {
+		coverageOptions.add(option);
 	}
 
 	public void instrument(Path file) {
@@ -33,8 +42,6 @@ public class Instrumentator {
 			System.err.format("file %s could not be saved or read: %n", file.toString());
 		}
 	}
-
-
 
 	private void addInstrumentors() {
 		for (CoverageMode mode : coverageModes) {
@@ -57,8 +64,20 @@ public class Instrumentator {
 			default:
 				break;
 			}
-
 		}
+		for (CoverageOption option : coverageOptions) {
+			switch (option) {
+			case DELETE_INSTRUMENTATION:
+				for (CoverageCriterion mode : selectedCoverageModes) {
+					mode.activateDeletion();
+				}
+
+			default:
+				break;
+
+			}
+		}
+
 	}
 
 	public void addInstrumentator(CoverageCriterion mode) {
@@ -94,22 +113,20 @@ public class Instrumentator {
 		return Files.exists(path) && Files.isDirectory(path);
 	}
 
-
-	
 	private void saveInstrumentedFile(String instrumentedFileText, Path path) {
 		Path folderOfInstrumentedFunctions = createFolderForResult(path.getParent().toString());
-		Path instrumentedFile = Paths.get(folderOfInstrumentedFunctions.toAbsolutePath() + "/" + path.getFileName().toString());
+		Path instrumentedFile = Paths
+				.get(folderOfInstrumentedFunctions.toAbsolutePath() + "/" + path.getFileName().toString());
 		System.out.println(instrumentedFile.getFileName());
 
 		try {
 			Files.writeString(instrumentedFile, instrumentedFileText, StandardOpenOption.CREATE,
 					StandardOpenOption.TRUNCATE_EXISTING);
 		} catch (IOException e) {
-			System.err.println("Could not write result of file " +  path.toAbsolutePath());
+			System.err.println("Could not write result of file " + path.toAbsolutePath());
 		}
-		
+
 	}
-	
 
 	private Path createFolderForResult(String directoryToSourceCodeOfFunctions) {
 		Path dirPathObj = Paths.get(directoryToSourceCodeOfFunctions + "/" + "instrumentedFunctionsWithAntlr");
@@ -128,4 +145,5 @@ public class Instrumentator {
 		}
 		return dirPathObj;
 	}
+
 }

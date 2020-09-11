@@ -176,4 +176,20 @@ public class InstrumentatorARS implements CoverageCriterion {
 	public String addCoverageStatementsReturn(String variable) {
 		return "";
 	}
+
+
+	@Override
+	public void activateDeletion() {
+		
+	}
+	@Override
+	public String addDefOfDeletes(String deleteParameter, int line) {
+		return "";
+	}
+	
+	@Override
+	public boolean isDeletionInstrumentation() {
+		return false;
+	}
+
 }

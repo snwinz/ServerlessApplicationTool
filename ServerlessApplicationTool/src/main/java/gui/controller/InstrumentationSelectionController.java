@@ -15,6 +15,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import model.logic.instrumentation.CoverageMode;
+import model.logic.instrumentation.CoverageOption;
 import model.logic.instrumentation.Instrumentator;
 
 public class InstrumentationSelectionController {
@@ -34,6 +35,8 @@ public class InstrumentationSelectionController {
 	CheckBox checkbox_ARD;
 	@FXML
 	CheckBox checkbox_ARU;
+	@FXML
+	CheckBox checkbox_DELETEOption;
 
 	private InstrumentationSelectionView view;
 
@@ -76,6 +79,9 @@ public class InstrumentationSelectionController {
 		}
 		if (checkbox_ARU.isSelected()) {
 			instrumentator.addCoverageMode(CoverageMode.ARU);
+		}
+		if (checkbox_DELETEOption.isSelected()) {
+			instrumentator.addCoverageOption(CoverageOption.DELETE_INSTRUMENTATION);
 		}
 
 		instrumentator.instrumentFilesOfFolder(sourceCodeDirectoryPath.getText());

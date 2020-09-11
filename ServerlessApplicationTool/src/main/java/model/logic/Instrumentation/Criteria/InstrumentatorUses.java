@@ -7,6 +7,7 @@ public class InstrumentatorUses implements CoverageCriterion {
 
 	private final static String functionInvocationMarkerDef = marker + "FID_";
 	private final static String databaseWriterMarkerDef = marker + "DBWD_";
+	private final static String databaseDeleteMarkerDef = marker + "DBDD_";
 	private final static String returnMarkerDef = marker + "RD_";
 
 	public final static String functionInvocationMarker = marker + "FI_";
@@ -16,6 +17,8 @@ public class InstrumentatorUses implements CoverageCriterion {
 	public final static String returnUseMarker = marker + "RU_";
 	public final static String databaseUseReadMarker = marker + "DBRU_";
 	public final static String functionStartUseMarker = marker + "SU_";
+
+	private boolean deletionInstrumentation = false;
 
 	
 	
@@ -107,13 +110,48 @@ public class InstrumentatorUses implements CoverageCriterion {
 
 	@Override
 	public String addUseOfReads(String useVar, int line) {
+	    String deletionUse = "";
+		if (isDeletionInstrumentation()) {
+			deletionUse = String.format("             else{%n" + "                 definition = %s.Item.funcDel;%n"
+					+ "                     if(definition != undefined) {%n"
+					+ "                     	console.log('%s' + definition.S + context.functionName + '_line%s_%s');%n"
+					+ "                     	%s = {};%n" + "						}%n" + "                 }%n",
+					useVar, databaseUseReadMarker, line, useVar, useVar);
+
+		}
 		String logLine = String.format("if (%s != undefined) {%n" + "        if (%s.Item != undefined) {%n"
-				+ "            const definition = %s.Item.funcDef;%n" + "            if (definition != undefined) {%n"
-				+ "                console.log('%s' + definition.S + '_' + context.functionName + '_line%s_%s');%n" + "            }%n" + "        }%n"
-				+ "    }", useVar, useVar, useVar, databaseUseReadMarker, line, useVar);
+				+ "            let definition = %s.Item.funcDef;%n" + "            if (definition != undefined) {%n"
+				+ "                console.log('%s' + definition.S + context.functionName + '_line%s_%s');%n" 
+				+ "            }%n" 
+				+ "            %s"
+				+ "        }%n" + "    }", useVar, useVar, useVar, databaseUseReadMarker, line, useVar, deletionUse);
 		return logLine;
+		
+		
+		
 	}
 	
+	@Override
+	public void activateDeletion() {
+		this.deletionInstrumentation = true;
+	}
 	
+	@Override
+	public String addDefOfDeletes(String deleteVar, int line) {
+		String logLine = String.format(
+				"if(%s.Key != undefined){%n" 
+		+ "          %s.Item = %s.Key;%n" 
+     	+ "      }%n"
+		+ "      %s.Item.funcDel = {S:  context.functionName + '_%s_line%s'};%n"
+		+ "      delete %s['Key'];%n" 
+		+ "      console.log('%s' + %s.Item.funcDel.S + ' ');",
+				deleteVar, deleteVar, deleteVar, deleteVar, deleteVar, line, deleteVar, databaseDeleteMarkerDef, deleteVar);
+		return logLine;
+	}
+
+	@Override
+	public boolean isDeletionInstrumentation() {
+		return deletionInstrumentation;
+	}
 	
 }

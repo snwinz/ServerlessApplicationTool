@@ -24,4 +24,12 @@ public interface CoverageCriterion {
 
 	String addUseOfReads(String useVar, int line);
 
+	String addDefOfDeletes(String deleteParameter, int line);
+	
+	void activateDeletion();
+
+	boolean isDeletionInstrumentation();
+
+	
+
 }

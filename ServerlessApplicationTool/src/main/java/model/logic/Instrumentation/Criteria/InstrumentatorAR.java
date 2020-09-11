@@ -9,6 +9,7 @@ public class InstrumentatorAR implements CoverageCriterion {
     public final static String functionInvocationMarker = marker + "FI_";
     public final static String dbAccessMarker = marker + "DBA_";
     
+    
 	@Override
 	public String addCoverageStatementsHandler(String event) {
 		 String logLine = String.format( "{%n"
@@ -77,6 +78,20 @@ public class InstrumentatorAR implements CoverageCriterion {
 	@Override
 	public String addCoverageStatementsReturn(String variable) {
 		return "";
+	}
+
+	@Override
+	public void activateDeletion() {
+		
+	}
+	@Override
+	public String addDefOfDeletes(String deleteParameter, int line) {
+		return "";
+	}
+
+	@Override
+	public boolean isDeletionInstrumentation() {
+		return false;
 	}
 
 }

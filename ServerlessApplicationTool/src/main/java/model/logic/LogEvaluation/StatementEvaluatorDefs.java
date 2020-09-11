@@ -34,7 +34,7 @@ public class StatementEvaluatorDefs extends StatementEvaluator {
 				InstrumentatorDefs.databaseUseReadMarker);
 		Collection<String> defUsedOfEvents = getFirstUsageOfDef(InstrumentatorDefs.functionStartMarker,
 				InstrumentatorDefs.functionStartUseMarker);
-
+		
 		coveredResources.addAll(defsUsedOfReturns);
 		coveredResources.addAll(defUsedOfDBwrites);
 		coveredResources.addAll(defUsedOfEvents);
