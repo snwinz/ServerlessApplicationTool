@@ -11,6 +11,7 @@ provider:
         - 'lambda:InvokeAsync'
         - 'dynamodb:PutItem'
         - 'dynamodb:GetItem'
+        - 'dynamodb:DeleteItem'
       Resource: '*'
 functions:
   Caller_AU:
@@ -36,6 +37,10 @@ functions:
   Getter2_AU:
     handler: Getter2_AU.handler
     name: Getter2_AU
+    events: []
+  Deleter_AU:
+    handler: Deleter_AU.handler
+    name: Deleter_AU
     events: []
 resources:
   Resources:

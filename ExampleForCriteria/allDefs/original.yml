@@ -36,6 +36,7 @@ provider:
         - "lambda:InvokeAsync"
         - "dynamodb:PutItem"
         - "dynamodb:GetItem"
+        - "dynamodb:DeleteItem"
       Resource: "*"
 #    - Effect: "Allow"
 #      Action:
@@ -79,6 +80,9 @@ functions:
   Getter2_AD:
     handler: Getter2_AD.handler
     name: Getter2_AD
+  Deleter_AD:
+    handler: Deleter_AD.handler
+    name: Deleter_AD
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
