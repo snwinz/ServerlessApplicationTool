@@ -119,13 +119,6 @@ public class InstrumentatorDefs implements CoverageCriterion {
 		return logLine;
 	}
 
-	public String modifyToDeletionLine(String line, String param) {
-		if (deletionInstrumentation) {
-
-		}
-		return line;
-	}
-
 	@Override
 	public void activateDeletion() {
 		this.deletionInstrumentation = true;
