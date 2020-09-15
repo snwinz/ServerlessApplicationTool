@@ -80,8 +80,15 @@ public class InstrumentatorDefs implements CoverageCriterion {
 
 	@Override
 	public String addUseOfEvents(String useVar, int line) {
-		String logLine = String.format("   if (event.funcDef != undefined) {%n"
-				+ "     console.log('%s' + event.funcDef + '_%s');%n" + "   } ", functionStartUseMarker, useVar);
+		String logLine = String.format(
+				"   if (event.funcDef != undefined) {%n" + "     console.log('%s' + event.funcDef + '_%s');%n" + "   } "
+						+ "   if (event.Records != undefined) {%n" + "   if (event.Records[0] != undefined) {%n"
+						+ "   	if (event.Records[0].dynamodb != undefined) {%n"
+						+ "   		if (event.Records[0].dynamodb.NewImage != undefined) {%n"
+						+ "   			if (event.Records[0].dynamodb.NewImage.funcDef != undefined) {%n"
+						+ "					let funcDef = event.Records[0].dynamodb.NewImage.funcDef.S;%n"
+						+ "    				console.log('%s' + funcDef+ '_%s');%n" + "\t\t\t\t}%n\t\t\t}%n\t\t}%n\t}%n}%n ",
+				functionStartUseMarker, useVar, functionStartUseMarker, useVar);
 		return logLine;
 	}
 
@@ -127,13 +134,11 @@ public class InstrumentatorDefs implements CoverageCriterion {
 	@Override
 	public String addDefOfDeletes(String deleteVar, int line) {
 		String logLine = String.format(
-				"if(%s.Key != undefined){%n" 
-		+ "          %s.Item = %s.Key;%n" 
-     	+ "      }%n"
-		+ "      %s.Item.funcDel = {S:  context.functionName + '_%s_line%s'};%n"
-		+ "      delete %s['Key'];%n" 
-		+ "      console.log('%s' + %s.Item.funcDel.S + ' ');",
-				deleteVar, deleteVar, deleteVar, deleteVar, deleteVar, line, deleteVar, databaseDeleteMarkerDef, deleteVar);
+				"if(%s.Key != undefined){%n" + "          %s.Item = %s.Key;%n" + "      }%n"
+						+ "      %s.Item.funcDel = {S:  context.functionName + '_%s_line%s'};%n"
+						+ "      delete %s['Key'];%n" + "      console.log('%s' + %s.Item.funcDel.S + ' ');",
+				deleteVar, deleteVar, deleteVar, deleteVar, deleteVar, line, deleteVar, databaseDeleteMarkerDef,
+				deleteVar);
 		return logLine;
 	}
 

@@ -88,15 +88,22 @@ public class InstrumentatorUses implements CoverageCriterion {
 		return logLine;
 	}
 
-	
+
 	@Override
 	public String addUseOfEvents(String useVar, int line) {
 		String logLine = String.format(
-				"   if (event.funcDef != undefined) {%n" + "     console.log('%s' + event.funcDef + '_' + context.functionName + '_line%s_%s');%n" + "   } ",
-				functionStartUseMarker, line, useVar);
+				"   if (event.funcDef != undefined) {%n" + "     console.log('%s' + event.funcDef + '_' + context.functionName + '_line%s_%s');%n" + "   } "
+						+ "   if (event.Records != undefined) {%n" + "   if (event.Records[0] != undefined) {%n"
+						+ "   	if (event.Records[0].dynamodb != undefined) {%n"
+						+ "   		if (event.Records[0].dynamodb.NewImage != undefined) {%n"
+						+ "   			if (event.Records[0].dynamodb.NewImage.funcDef != undefined) {%n"
+						+ "					let funcDef = event.Records[0].dynamodb.NewImage.funcDef.S;%n"
+						+ "    				console.log('%s' + funcDef + '_' + context.functionName + '_line%s_%s');%n" + "\t\t\t\t}%n\t\t\t}%n\t\t}%n\t}%n}%n ",
+				functionStartUseMarker, line, useVar, functionStartUseMarker, useVar, line, useVar);
 		return logLine;
 	}
-
+	
+	
 	
 	@Override
 	public String addUseOfReturn(String useVar, int line) {
