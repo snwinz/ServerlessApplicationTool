@@ -10,14 +10,14 @@ public class InstrumentatorARR implements CoverageCriterion {
 	@Override
 	public String addCoverageStatementsHandler(String event) {
 		String logLine = String.format("\tif(%s.Records != undefined){%n"
-				+ "\t\tconsole.log('%s' + %s.Records[0].eventSourceARN.split(':')[5].split('/')[1] + ';' + context.functionName + ' ');%n"
+				+ "\t\tconsole.log('%s' + %s.Records[0].eventSourceARN.split(':')[5].split('/')[1] + ';' + context.functionName);%n"
 				+ " \t}", event, functionStartMarker, event);
 		return logLine;
 	}
 
 	@Override
 	public String addCoverageStatementsInvocation(String param, String returnValue) {
-		String logLine = String.format("\tconsole.log('%s' + context.functionName + ';' + %s.FunctionName + ' ');",
+		String logLine = String.format("\tconsole.log('%s' + context.functionName + ';' + %s.FunctionName);",
 				functionInvocationMarker, param);
 		return logLine;
 	}
@@ -29,7 +29,7 @@ public class InstrumentatorARR implements CoverageCriterion {
 
 	@Override
 	public String addCoverageStatementDBisWritten(String param) {
-		String logLine = String.format("\tconsole.log('%s'+ context.functionName + ';' + %s.TableName + ' ');",
+		String logLine = String.format("\tconsole.log('%s'+ context.functionName + ';' + %s.TableName);",
 				dbAccessMarker, param);
 		return logLine;
 	}

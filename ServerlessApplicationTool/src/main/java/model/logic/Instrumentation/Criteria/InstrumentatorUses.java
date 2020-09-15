@@ -3,7 +3,7 @@ package model.logic.Instrumentation.Criteria;
 
 public class InstrumentatorUses implements CoverageCriterion {
 
-	public final static String marker = "#ARU_";
+	public final static String marker = "#AU_";
 
 	private final static String functionInvocationMarkerDef = marker + "FID_";
 	private final static String databaseWriterMarkerDef = marker + "DBWD_";
@@ -63,7 +63,7 @@ public class InstrumentatorUses implements CoverageCriterion {
 	public String addDefOfInvocationVar(String defVar, int line) {
 		String logLine = String.format(
 				"    %s.Payload = %s.Payload.replace('\\{','{\"funcDefAU\" : \"' + context.functionName + '_%s_line%s\",');%n"
-						+ "    console.log('%s' + JSON.parse(%s.Payload).funcDefAU + ' ');",
+						+ "    console.log('%s' + JSON.parse(%s.Payload).funcDefAU);",
 				defVar, defVar, defVar, line, functionInvocationMarkerDef, defVar);
 		return logLine;
 	}
@@ -73,7 +73,7 @@ public class InstrumentatorUses implements CoverageCriterion {
 	public String addDefOfWrites( String defVar, int line) {
 		String logLine = String.format(
 				"          %s.Item.funcDefAU = {S:  context.functionName + '_%s_line%s'};%n"
-						+ "          console.log('%s' + %s.Item.funcDefAU.S + ' ');",
+						+ "          console.log('%s' + %s.Item.funcDefAU.S);",
 				defVar, defVar, line, databaseWriterMarkerDef, defVar);
 		return logLine;
 	}
@@ -83,7 +83,7 @@ public class InstrumentatorUses implements CoverageCriterion {
 	public String addDefOfReturns(String defVar, int line) {
 		String logLine = String.format(
 				"    %s.returnDefAU = context.functionName + '_%s_line%s';%n"
-						+ "    console.log('%s' + (%s.returnDefAU) + ' ');",
+						+ "    console.log('%s' + (%s.returnDefAU));",
 				defVar, defVar, line, returnMarkerDef, defVar);
 		return logLine;
 	}
@@ -151,7 +151,7 @@ public class InstrumentatorUses implements CoverageCriterion {
      	+ "      }%n"
 		+ "      %s.Item.funcDelAU = {S:  context.functionName + '_%s_line%s'};%n"
 		+ "      delete %s['Key'];%n" 
-		+ "      console.log('%s' + %s.Item.funcDelAU.S + ' ');",
+		+ "      console.log('%s' + %s.Item.funcDelAU.S);",
 				deleteVar, deleteVar, deleteVar, deleteVar, deleteVar, line, deleteVar, databaseDeleteMarkerDef, deleteVar);
 		return logLine;
 	}

@@ -14,9 +14,9 @@ public class InstrumentatorAR implements CoverageCriterion {
 	public String addCoverageStatementsHandler(String event) {
 		 String logLine = String.format( "{%n"
                  + "        if(%s.Records != undefined){%n"
-                 + "            console.log('%s' + %s.Records[0].eventSourceARN.split(':')[5].split('/')[1] + ' ');\r\n"
+                 + "            console.log('%s' + %s.Records[0].eventSourceARN.split(':')[5].split('/')[1]);\r\n"
                  + "        }%n"
-                 + "        console.log('%s' + context.functionName + ' ');%n"
+                 + "        console.log('%s' + context.functionName);%n"
                  + "}%n",
          event, functionStartMarker, event, functionStartMarker, functionStartMarker);
 		return logLine;
@@ -24,7 +24,7 @@ public class InstrumentatorAR implements CoverageCriterion {
 
     @Override
     public String addCoverageStatementsInvocation(String param, String returnValue) {
-        String logLine = String.format("\tconsole.log('%s' + %s.FunctionName + ' ');", functionInvocationMarker,
+        String logLine = String.format("\tconsole.log('%s' + %s.FunctionName);", functionInvocationMarker,
                 param);
         return logLine;
     }
@@ -37,7 +37,7 @@ public class InstrumentatorAR implements CoverageCriterion {
 
     @Override
     public String addCoverageStatementDBisWritten(String param) {
-        String logLine = String.format("\tconsole.log('%s' + %s.TableName + ' ');", dbAccessMarker, param);
+        String logLine = String.format("\tconsole.log('%s' + %s.TableName);", dbAccessMarker, param);
         return logLine;
     }
 

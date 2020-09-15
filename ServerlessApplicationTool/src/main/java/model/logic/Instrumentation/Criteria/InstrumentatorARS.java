@@ -25,11 +25,11 @@ public class InstrumentatorARS implements CoverageCriterion {
                         "    }%n" +
                         "    var oldSeqFunctionCall = %s.oldSeq;%n" +
                         "    if(oldSeqDB == undefined && oldSeqFunctionCall== undefined){%n" +
-                        "        console.log('%s' + context.functionName + ';' + ' ');%n" +
+                        "        console.log('%s' + context.functionName + ';');%n" +
                         "    }else if(oldSeqDB != undefined){%n" +
-                        "        console.log('%s' + oldSeqDB + context.functionName + ';' + ' ');%n" +
+                        "        console.log('%s' + oldSeqDB + context.functionName + ';');%n" +
                         "    }else if(oldSeqFunctionCall != undefined){%n" +
-                        "        console.log('%s' + oldSeqFunctionCall+ context.functionName + ';' + ' ');%n" +
+                        "        console.log('%s' + oldSeqFunctionCall+ context.functionName + ';');%n" +
                         "    }else{%n" +
                         "        console.log(\"Error: Function cannot be called by DB and Function. Check calling resource.\");%n" +
                         "    }%n" +
@@ -71,7 +71,7 @@ public class InstrumentatorARS implements CoverageCriterion {
                 "        }%n" +
                 "    }%n" +
                 "    passingParameter.Payload = passingParameter.Payload.replace	('\\{','{\"oldSeq\" : \"' + passedSequence + context.functionName + ';\",');%n " +
-                "    console.log('%s' + JSON.parse(passingParameter.Payload).oldSeq + passingParameter.FunctionName + ';' + ' ');%n" +
+                "    console.log('%s' + JSON.parse(passingParameter.Payload).oldSeq + passingParameter.FunctionName + ';');%n" +
                 "}", param, functionInvocationMarker);
         return logLine;
     }
@@ -99,7 +99,7 @@ public class InstrumentatorARS implements CoverageCriterion {
                            "        }else{%n" +
                            "            console.log(\"Error: Function is not called by DB or Lambda. Check calling resource.\");%n" +
                            "        }%n" +
-                           "         console.log('%s' + sequencePassed + context.functionName + ';' + passingParameter.TableName + ';' + ' ');%n" +
+                           "         console.log('%s' + sequencePassed + context.functionName + ';' + passingParameter.TableName + ';');%n" +
                            "    }%n" +
                            "}",
                    param, dbAccessMarker);
@@ -130,7 +130,7 @@ public class InstrumentatorARS implements CoverageCriterion {
                         "        }%n" +
                         "        passingParameter.Item.oldSeq = {S: sequencePassed + context.functionName +';'+ passingParameter.TableName +';'}%n" +
                         "    }%n" +
-                        "    console.log('%s' + passingParameter.Item.oldSeq.S + ' ');%n" +
+                        "    console.log('%s' + passingParameter.Item.oldSeq.S);%n" +
                         "}",
                 param, dbWriteMarker);
         return logLine;

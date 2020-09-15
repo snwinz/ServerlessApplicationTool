@@ -2,7 +2,7 @@ package model.logic.Instrumentation.Criteria;
 
 public class InstrumentatorDefs implements CoverageCriterion {
 
-	public final static String marker = "#ARD_";
+	public final static String marker = "#AD_";
 
 	private final static String functionInvocationMarkerDef = marker + "FID_";
 	private final static String databaseWriterMarkerDef = marker + "DBWD_";
@@ -55,7 +55,7 @@ public class InstrumentatorDefs implements CoverageCriterion {
 		String logLine = String.format(
 				"    %s.Payload = %s.Payload.replace('\\{','{\"funcDefAD\" : \"' "
 						+ "+ context.functionName + '_%s_line%s\",');%n"
-						+ "    console.log('%s' + JSON.parse(%s.Payload).funcDefAD + ' ');",
+						+ "    console.log('%s' + JSON.parse(%s.Payload).funcDefAD);",
 				defVar, defVar, defVar, line, functionInvocationMarkerDef, defVar);
 		return logLine;
 	}
@@ -64,7 +64,7 @@ public class InstrumentatorDefs implements CoverageCriterion {
 	public String addDefOfWrites(String defVar, int line) {
 		String logLine = String.format(
 				"          %s.Item.funcDefAD = {S:  context.functionName + '_%s_line%s'};%n"
-						+ "          console.log('%s' + %s.Item.funcDefAD.S + ' ');",
+						+ "          console.log('%s' + %s.Item.funcDefAD.S);",
 				defVar, defVar, line, databaseWriterMarkerDef, defVar);
 		return logLine;
 	}
@@ -73,7 +73,7 @@ public class InstrumentatorDefs implements CoverageCriterion {
 	public String addDefOfReturns(String defVar, int line) {
 		String logLine = String.format(
 				"    %s.returnDefAD = context.functionName + '_%s_line%s';%n"
-						+ "    console.log('%s' + (%s.returnDefAD) + ' ');%n",
+						+ "    console.log('%s' + (%s.returnDefAD));%n",
 				defVar, defVar, line, returnMarkerDef, defVar);
 		return logLine;
 	}
@@ -129,7 +129,7 @@ public class InstrumentatorDefs implements CoverageCriterion {
 		String logLine = String.format(
 				"if(%s.Key != undefined){%n" + "          %s.Item = %s.Key;%n" + "      }%n"
 						+ "      %s.Item.funcDelAD = {S:  context.functionName + '_%s_line%s'};%n"
-						+ "      delete %s['Key'];%n" + "      console.log('%s' + %s.Item.funcDelAD.S + ' ');",
+						+ "      delete %s['Key'];%n" + "      console.log('%s' + %s.Item.funcDelAD.S);",
 				deleteVar, deleteVar, deleteVar, deleteVar, deleteVar, line, deleteVar, databaseDeleteMarkerDef,
 				deleteVar);
 		return logLine;
