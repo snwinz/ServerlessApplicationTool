@@ -62,8 +62,8 @@ public class InstrumentatorUses implements CoverageCriterion {
 	@Override
 	public String addDefOfInvocationVar(String defVar, int line) {
 		String logLine = String.format(
-				"    %s.Payload = %s.Payload.replace('\\{','{\"funcDef\" : \"' + context.functionName + '_%s_line%s\",');%n"
-						+ "    console.log('%s' + JSON.parse(%s.Payload).funcDef + ' ');",
+				"    %s.Payload = %s.Payload.replace('\\{','{\"funcDefAU\" : \"' + context.functionName + '_%s_line%s\",');%n"
+						+ "    console.log('%s' + JSON.parse(%s.Payload).funcDefAU + ' ');",
 				defVar, defVar, defVar, line, functionInvocationMarkerDef, defVar);
 		return logLine;
 	}
@@ -72,8 +72,8 @@ public class InstrumentatorUses implements CoverageCriterion {
 	@Override
 	public String addDefOfWrites( String defVar, int line) {
 		String logLine = String.format(
-				"          %s.Item.funcDef = {S:  context.functionName + '_%s_line%s'};%n"
-						+ "          console.log('%s' + %s.Item.funcDef.S + ' ');",
+				"          %s.Item.funcDefAU = {S:  context.functionName + '_%s_line%s'};%n"
+						+ "          console.log('%s' + %s.Item.funcDefAU.S + ' ');",
 				defVar, defVar, line, databaseWriterMarkerDef, defVar);
 		return logLine;
 	}
@@ -82,8 +82,8 @@ public class InstrumentatorUses implements CoverageCriterion {
 	@Override
 	public String addDefOfReturns(String defVar, int line) {
 		String logLine = String.format(
-				"    %s.returnDef = context.functionName + '_%s_line%s';%n"
-						+ "    console.log('%s' + (%s.returnDef) + ' ');",
+				"    %s.returnDefAU = context.functionName + '_%s_line%s';%n"
+						+ "    console.log('%s' + (%s.returnDefAU) + ' ');",
 				defVar, defVar, line, returnMarkerDef, defVar);
 		return logLine;
 	}
@@ -92,13 +92,13 @@ public class InstrumentatorUses implements CoverageCriterion {
 	@Override
 	public String addUseOfEvents(String useVar, int line) {
 		String logLine = String.format(
-				"   if (event.funcDef != undefined) {%n" + "     console.log('%s' + event.funcDef + '_' + context.functionName + '_line%s_%s');%n" + "   } "
+				"   if (event.funcDefAU != undefined) {%n" + "     console.log('%s' + event.funcDefAU + '_' + context.functionName + '_line%s_%s');%n" + "   } "
 						+ "   if (event.Records != undefined) {%n" + "   if (event.Records[0] != undefined) {%n"
 						+ "   	if (event.Records[0].dynamodb != undefined) {%n"
 						+ "   		if (event.Records[0].dynamodb.NewImage != undefined) {%n"
-						+ "   			if (event.Records[0].dynamodb.NewImage.funcDef != undefined) {%n"
-						+ "					let funcDef = event.Records[0].dynamodb.NewImage.funcDef.S;%n"
-						+ "    				console.log('%s' + funcDef + '_' + context.functionName + '_line%s_%s');%n" + "\t\t\t\t}%n\t\t\t}%n\t\t}%n\t}%n}%n ",
+						+ "   			if (event.Records[0].dynamodb.NewImage.funcDefAU != undefined) {%n"
+						+ "					let funcDefAU = event.Records[0].dynamodb.NewImage.funcDefAU.S;%n"
+						+ "    				console.log('%s' + funcDefAU + '_' + context.functionName + '_line%s_%s');%n" + "\t\t\t\t}%n\t\t\t}%n\t\t}%n\t}%n}%n ",
 				functionStartUseMarker, line, useVar, functionStartUseMarker, useVar, line, useVar);
 		return logLine;
 	}
@@ -109,7 +109,7 @@ public class InstrumentatorUses implements CoverageCriterion {
 	public String addUseOfReturn(String useVar, int line) {
 		String logLine = String.format(
 				"   if (%s.Payload != undefined) {%n" + 
-		"     var answerOfReturn = JSON.parse(%s.Payload).returnDef;%n" +
+		"     var answerOfReturn = JSON.parse(%s.Payload).returnDefAU;%n" +
 		"     console.log('%s' + answerOfReturn + '_' + context.functionName + '_line%s_%s');%n" + "   } ",
 				useVar, useVar, returnUseMarker, line, useVar);
 		return logLine;
@@ -119,7 +119,7 @@ public class InstrumentatorUses implements CoverageCriterion {
 	public String addUseOfReads(String useVar, int line) {
 	    String deletionUse = "";
 		if (isDeletionInstrumentation()) {
-			deletionUse = String.format("             else{%n" + "                 definition = %s.Item.funcDel;%n"
+			deletionUse = String.format("             else{%n" + "                 definition = %s.Item.funcDelAU;%n"
 					+ "                     if(definition != undefined) {%n"
 					+ "                     	console.log('%s' + definition.S + context.functionName + '_line%s_%s');%n"
 					+ "                     	%s = {};%n" + "						}%n" + "                 }%n",
@@ -127,7 +127,7 @@ public class InstrumentatorUses implements CoverageCriterion {
 
 		}
 		String logLine = String.format("if (%s != undefined) {%n" + "        if (%s.Item != undefined) {%n"
-				+ "            let definition = %s.Item.funcDef;%n" + "            if (definition != undefined) {%n"
+				+ "            let definition = %s.Item.funcDefAU;%n" + "            if (definition != undefined) {%n"
 				+ "                console.log('%s' + definition.S + context.functionName + '_line%s_%s');%n" 
 				+ "            }%n" 
 				+ "            %s"
@@ -149,9 +149,9 @@ public class InstrumentatorUses implements CoverageCriterion {
 				"if(%s.Key != undefined){%n" 
 		+ "          %s.Item = %s.Key;%n" 
      	+ "      }%n"
-		+ "      %s.Item.funcDel = {S:  context.functionName + '_%s_line%s'};%n"
+		+ "      %s.Item.funcDelAU = {S:  context.functionName + '_%s_line%s'};%n"
 		+ "      delete %s['Key'];%n" 
-		+ "      console.log('%s' + %s.Item.funcDel.S + ' ');",
+		+ "      console.log('%s' + %s.Item.funcDelAU.S + ' ');",
 				deleteVar, deleteVar, deleteVar, deleteVar, deleteVar, line, deleteVar, databaseDeleteMarkerDef, deleteVar);
 		return logLine;
 	}
