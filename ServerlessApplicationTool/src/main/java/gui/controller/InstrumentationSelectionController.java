@@ -34,6 +34,8 @@ public class InstrumentationSelectionController {
 	@FXML
 	CheckBox checkbox_ARD;
 	@FXML
+	CheckBox checkbox_ARDU;
+	@FXML
 	CheckBox checkbox_ARU;
 	@FXML
 	CheckBox checkbox_DELETEOption;
@@ -76,6 +78,9 @@ public class InstrumentationSelectionController {
 		}
 		if (checkbox_ARD.isSelected()) {
 			instrumentator.addCoverageMode(CoverageMode.ARD);
+		}
+		if (checkbox_ARDU.isSelected()) {
+			instrumentator.addCoverageMode(CoverageMode.ARDU);
 		}
 		if (checkbox_ARU.isSelected()) {
 			instrumentator.addCoverageMode(CoverageMode.ARU);

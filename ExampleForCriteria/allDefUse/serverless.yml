@@ -1,0 +1,60 @@
+service: allDefUse
+provider:
+  stage: beta
+  region: eu-central-1
+  name: aws
+  runtime: nodejs12.x
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - 'lambda:InvokeFunction'
+        - 'lambda:InvokeAsync'
+        - 'dynamodb:PutItem'
+        - 'dynamodb:GetItem'
+        - 'dynamodb:DeleteItem'
+      Resource: '*'
+functions:
+  Caller_ADU:
+    handler: Caller_ADU.handler
+    name: Caller_ADU
+    events: []
+  Callee1_ADU:
+    handler: Callee1_ADU.handler
+    name: Callee1_ADU
+    events: []
+  Callee2_ADU:
+    handler: Callee2_ADU.handler
+    name: Callee2_ADU
+    events: []
+  Writer_ADU:
+    handler: Writer_ADU.handler
+    name: Writer_ADU
+    events: []
+  Getter1_ADU:
+    handler: Getter1_ADU.handler
+    name: Getter1_ADU
+    events: []
+  Getter2_ADU:
+    handler: Getter2_ADU.handler
+    name: Getter2_ADU
+    events: []
+  Deleter_ADU:
+    handler: Deleter_ADU.handler
+    name: Deleter_ADU
+    events: []
+resources:
+  Resources:
+    TableARS:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        TableName: Table_ADU
+        AttributeDefinitions:
+          - AttributeName: myID
+            AttributeType: 'N'
+        KeySchema:
+          - AttributeName: myID
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+

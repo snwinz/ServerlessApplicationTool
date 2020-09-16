@@ -1,8 +1,8 @@
 package model.logic.Instrumentation.Criteria;
 
-public class InstrumentatorUses implements CoverageCriterion {
+public class InstrumentatorDefUse implements CoverageCriterion {
 
-	private final static String coverageAbbreviation = "AU";
+	private final static String coverageAbbreviation = "ADU";
 	public final static String marker = "#" + coverageAbbreviation + "_";
 	private final static String functionInvocationMarkerDef = marker + "FID_";
 	private final static String databaseWriterMarkerDef = marker + "DBWD_";
@@ -116,12 +116,13 @@ public class InstrumentatorUses implements CoverageCriterion {
 					useVar, databaseUseReadMarker, line, useVar, useVar);
 
 		}
-		String logLine = String.format("if (%s != undefined) {%n" + "        if (%s.Item != undefined) {%n"
-				+ "            let definition = %s.Item.funcDef" + coverageAbbreviation + ";%n"
-				+ "            if (definition != undefined) {%n"
-				+ "                console.log('%s' + definition.S + '_##' + context.functionName + '_line%s_%s');%n"
-				+ "            }%n" + "            %s" + "        }%n" + "    }", useVar, useVar, useVar,
-				databaseUseReadMarker, line, useVar, deletionUse);
+		String logLine = String.format(
+				"if (%s != undefined) {%n" + "        if (%s.Item != undefined) {%n"
+						+ "            let definition = %s.Item.funcDef" + coverageAbbreviation + ";%n"
+						+ "            if (definition != undefined) {%n"
+						+ "                console.log('%s' + definition.S + '_##' + context.functionName + '_line%s_%s');%n"
+						+ "            }%n" + "            %s" + "        }%n" + "    }",
+				useVar, useVar, useVar, databaseUseReadMarker, line, useVar, deletionUse);
 		return logLine;
 
 	}

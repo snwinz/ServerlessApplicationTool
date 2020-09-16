@@ -14,6 +14,7 @@ import model.logic.Instrumentation.Criteria.CoverageCriterion;
 import model.logic.Instrumentation.Criteria.InstrumentatorAR;
 import model.logic.Instrumentation.Criteria.InstrumentatorARR;
 import model.logic.Instrumentation.Criteria.InstrumentatorARS;
+import model.logic.Instrumentation.Criteria.InstrumentatorDefUse;
 import model.logic.Instrumentation.Criteria.InstrumentatorDefs;
 import model.logic.Instrumentation.Criteria.InstrumentatorUses;
 import model.logic.Instrumentation.logic.InstrumentationController;
@@ -57,6 +58,9 @@ public class Instrumentator {
 				break;
 			case ARD:
 				addInstrumentator(new InstrumentatorDefs());
+				break;
+			case ARDU:
+				addInstrumentator(new InstrumentatorDefUse());
 				break;
 			case ARU:
 				addInstrumentator(new InstrumentatorUses());

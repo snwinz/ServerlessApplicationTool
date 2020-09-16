@@ -26,6 +26,7 @@ public class LogFileEvaluator {
             evaluators.add(new StatementEvaluatorARR(logStatements));
             evaluators.add(new StatementEvaluatorARS(logStatements));
             evaluators.add(new StatementEvaluatorDefs(logStatements));
+            evaluators.add(new StatementEvaluatorDefUse(logStatements));
             evaluators.add(new StatementEvaluatorUses(logStatements));
 
 

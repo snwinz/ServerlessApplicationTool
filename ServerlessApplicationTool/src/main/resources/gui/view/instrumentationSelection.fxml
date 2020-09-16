@@ -14,7 +14,8 @@
    <CheckBox fx:id="checkbox_ARS" layoutX="36.0" layoutY="277.0" mnemonicParsing="false" text="All-resource-sequences" />
    <CheckBox fx:id="checkbox_AR" layoutX="36.0" layoutY="228.0" mnemonicParsing="false" text="All-resources" />
    <CheckBox fx:id="checkbox_ARD" layoutX="36.0" layoutY="302.0" mnemonicParsing="false" text="All-resource-defs" />
-   <CheckBox fx:id="checkbox_ARU" layoutX="36.0" layoutY="326.0" mnemonicParsing="false" text="All-resource-uses" />
+   <CheckBox fx:id="checkbox_ARDU" layoutX="36.0" layoutY="326.0" mnemonicParsing="false" text="All-resource-def-uses" />
+   <CheckBox fx:id="checkbox_ARU" layoutX="36.0" layoutY="350.0" mnemonicParsing="false" text="All-resource-uses" />
    <CheckBox fx:id="checkbox_DELETEOption" layoutX="323.0" layoutY="326.0" mnemonicParsing="false" text="instrument deletes" />
    <Label layoutX="24.0" layoutY="124.0" prefHeight="17.0" prefWidth="324.0" text="Folder containing all functions:" />
 </AnchorPane>
