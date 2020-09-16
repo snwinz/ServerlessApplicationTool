@@ -30,12 +30,6 @@ public class StatementEvaluatorAR extends StatementEvaluator {
 
         Map<String, Integer> unitsCovered = countNumberOfOccurrences(coveredResources);
 
-        System.out.println("AR coverage: ");
-        unitsCovered.forEach((a, b) -> {
-            System.out.println(a);
-            System.out.println("Occurences: " + b);
-        });
-
         return unitsCovered;
     }
 

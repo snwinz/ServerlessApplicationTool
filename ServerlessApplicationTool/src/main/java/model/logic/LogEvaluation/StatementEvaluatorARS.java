@@ -26,11 +26,6 @@ public class StatementEvaluatorARS extends StatementEvaluator {
                 logs.stream().filter(s -> hasRelevantMarker(s)).map(s -> removeRelevantMarker(s)).collect(Collectors.toList());
         Map<String, Integer> unitsCovered = countNumberOfOccurrences(coveredResources);
 
-        System.out.println("ARS coverage:");
-        unitsCovered.forEach((k, v) -> {
-            System.out.println(k);
-            System.out.println("Occurrences: " + v);
-        });
         return unitsCovered;
     }
 

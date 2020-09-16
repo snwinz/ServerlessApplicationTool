@@ -41,11 +41,6 @@ public class StatementEvaluatorDefs extends StatementEvaluator {
 
 		Map<String, Integer> unitsCovered = countNumberOfOccurrences(coveredResources);
 
-		System.out.println("All defs coverage:");
-		unitsCovered.forEach((k, v) -> {
-			System.out.println(k);
-			System.out.println("Occurrences: " + v);
-		});
 		return unitsCovered;
 	}
 
