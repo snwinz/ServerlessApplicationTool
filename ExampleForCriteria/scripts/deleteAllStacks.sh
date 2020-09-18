@@ -1,1 +1,1 @@
-aws cloudformation list-stacks --stack-status-filter UPDATE_COMPLETE | grep StackName | cut -d '"' -f4 | while read x; do echo "deleting stack $x"; aws cloudformation delete-stack --stack-name $x; done
+aws cloudformation list-stacks --stack-status-filter UPDATE_COMPLETE DELETE_FAILED | grep StackName | cut -d '"' -f4 | while read x; do echo "deleting stack $x"; aws cloudformation delete-stack --stack-name $x; done
