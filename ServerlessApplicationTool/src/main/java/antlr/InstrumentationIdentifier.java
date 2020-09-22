@@ -2,6 +2,7 @@ package antlr;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,6 +30,7 @@ public class InstrumentationIdentifier<T> extends JavaScriptParserBaseVisitor<T>
 	private Map<String, StatementContext> useVariablesOfReturns = new HashMap<String, StatementContext>();
 
 	private List<CoverageCriterion> criteria;
+	private List<TokenContent> textToBeAddedBeforeTokens = new LinkedList<>();
 
 	public InstrumentationIdentifier(TokenStream tokens, List<CoverageCriterion> criteria) {
 		this.rewriter = new TokenStreamRewriter(tokens);
@@ -43,7 +45,7 @@ public class InstrumentationIdentifier<T> extends JavaScriptParserBaseVisitor<T>
 			if (event != null && firstLineOfLambda != null) {
 				useVariablesOfEvents.put(event.getText(), ctx);
 				String invokationTracker = createLinesforExportHandler(event.getText());
-				rewriter.insertBefore(firstLineOfLambda.start, invokationTracker);
+				textToBeAddedBeforeTokens.add(new TokenContent(firstLineOfLambda.start, invokationTracker));
 			}
 		}
 
@@ -385,6 +387,13 @@ public class InstrumentationIdentifier<T> extends JavaScriptParserBaseVisitor<T>
 		String logLine = result.toString();
 		Comment comment = new Comment(startComment, endCommend, logLine);
 		return comment.toString();
+	}
+
+	public String getText() {
+		for (TokenContent content : textToBeAddedBeforeTokens) {
+			rewriter.insertBefore(content.getToken(), content.getText());
+		}
+		return rewriter.getText();
 	}
 
 }

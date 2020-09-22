@@ -24,7 +24,7 @@ public class InstrumentationController {
 		ParserRuleContext program = parser.program();
 		InstrumentationIdentifier<Object> visitor = new InstrumentationIdentifier<Object>(tokens, instrumentators);
 		visitor.visit(program);
-		return visitor.rewriter.getText();
+		return visitor.getText();
 	}
 
 	
