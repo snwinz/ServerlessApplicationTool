@@ -9,5 +9,5 @@
     <TextField fx:id="logFilePath" layoutX="24.0" layoutY="150.0" prefHeight="25.0" prefWidth="405.0" />
     <Button layoutX="323.0" layoutY="322.0" onAction="#evaluateCoverage" text="Evaluate Coverage" />
     <Button layoutX="441.0" layoutY="150.0" onAction="#chooselogFilePath" text="..."/>
-   <Label layoutX="24.0" layoutY="124.0" prefHeight="17.0" prefWidth="324.0" text="Folder containing all functions:" />
+   <Label layoutX="24.0" layoutY="124.0" prefHeight="17.0" prefWidth="324.0" text="File containing logs:" />
 </AnchorPane>
