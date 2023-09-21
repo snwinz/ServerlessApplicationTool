@@ -10,6 +10,8 @@ public interface CoverageCriterion {
 
 	String addCoverageStatementDBisWritten(String param);
 
+	String addCoverageStatementDBisDeleted(String param);
+
 	String addCoverageStatementsReturn(String variable);
 
 	String addDefOfInvocationVar(String defVar, int line);

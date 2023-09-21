@@ -46,6 +46,11 @@ public class InstrumentatorUses implements CoverageCriterion {
 	}
 
 	@Override
+	public String addCoverageStatementDBisDeleted(String param) {
+		return this.addCoverageStatementDBisWritten(param);
+	}
+
+	@Override
 	public String addCoverageStatementsReturn(String variable) {
 		return "";
 	}

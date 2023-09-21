@@ -7,7 +7,7 @@ public class InstrumentatorARS implements CoverageCriterion {
     public final static String functionInvocationMarker = marker + "FI_";
     public final static String dbWriteMarker = marker + "DBW_";
     public final static String dbAccessMarker = marker + "DBR_";
-
+    private boolean deletionInstrumentation = false;
 
     @Override
     public String addCoverageStatementsHandler(String event) {
@@ -37,10 +37,10 @@ public class InstrumentatorARS implements CoverageCriterion {
                 event, event, event, functionStartMarker, functionStartMarker, functionStartMarker);
         return logLine;
     }
-    
-    
+
+
     @Override
-	public String addCoverageStatementsInvocation(String param, String returnValue) {
+    public String addCoverageStatementsInvocation(String param, String returnValue) {
 
         String logLine = String.format("{%n" +
                 "    var passingParameter = %s;%n" +
@@ -75,38 +75,35 @@ public class InstrumentatorARS implements CoverageCriterion {
                 "}", param, functionInvocationMarker);
         return logLine;
     }
-    
-    
 
 
     @Override
-   	public String addCoverageStatementDBisRead(String param, String returnValue) {
-           String logLine = String.format("{%n" +
-                           "    var passingParameter = %s;%n" +
-                           "    {%n" +
-                           "   var oldSeqDB = event.Records;%n" +
-                           "   if (oldSeqDB != undefined) {%n" +
-                           "      oldSeqDB = event.Records[0].dynamodb.NewImage.oldSeq.S;%n" +
-                           "    }%n" +
-                           "        var oldSeqFunctionCall = event.oldSeq;%n" +
-                           "        var sequencePassed = \"\";%n" +
-                           "        if(oldSeqDB == undefined && oldSeqFunctionCall== undefined){%n" +
-                           "            sequencePassed = \"\";%n" +
-                           "        }else if(oldSeqDB != undefined){%n" +
-                           "            sequencePassed = oldSeqDB;%n" +
-                           "        }else if(oldSeqFunctionCall != undefined){%n" +
-                           "            sequencePassed = oldSeqFunctionCall;%n" +
-                           "        }else{%n" +
-                           "            console.log(\"Error: Function is not called by DB or Lambda. Check calling resource.\");%n" +
-                           "        }%n" +
-                           "         console.log('%s' + sequencePassed + context.functionName + ';' + passingParameter.TableName + ';');%n" +
-                           "    }%n" +
-                           "}",
-                   param, dbAccessMarker);
-           return logLine;
-       }
+    public String addCoverageStatementDBisRead(String param, String returnValue) {
+        String logLine = String.format("{%n" +
+                        "    var passingParameter = %s;%n" +
+                        "    {%n" +
+                        "   var oldSeqDB = event.Records;%n" +
+                        "   if (oldSeqDB != undefined) {%n" +
+                        "      oldSeqDB = event.Records[0].dynamodb.NewImage.oldSeq.S;%n" +
+                        "    }%n" +
+                        "        var oldSeqFunctionCall = event.oldSeq;%n" +
+                        "        var sequencePassed = \"\";%n" +
+                        "        if(oldSeqDB == undefined && oldSeqFunctionCall== undefined){%n" +
+                        "            sequencePassed = \"\";%n" +
+                        "        }else if(oldSeqDB != undefined){%n" +
+                        "            sequencePassed = oldSeqDB;%n" +
+                        "        }else if(oldSeqFunctionCall != undefined){%n" +
+                        "            sequencePassed = oldSeqFunctionCall;%n" +
+                        "        }else{%n" +
+                        "            console.log(\"Error: Function is not called by DB or Lambda. Check calling resource.\");%n" +
+                        "        }%n" +
+                        "         console.log('%s' + sequencePassed + context.functionName + ';' + passingParameter.TableName + ';');%n" +
+                        "    }%n" +
+                        "}",
+                param, dbAccessMarker);
+        return logLine;
+    }
 
-    
 
     @Override
     public String addCoverageStatementDBisWritten(String param) {
@@ -135,61 +132,101 @@ public class InstrumentatorARS implements CoverageCriterion {
                 param, dbWriteMarker);
         return logLine;
     }
-    
-	
-	@Override
-	public String addDefOfInvocationVar(String defVar, int line) {
-		return "";
-	}
+
+    @Override
+    public String addCoverageStatementDBisDeleted(String param) {
+        String logLine = String.format("{%n" +
+                        "    var passingParameter = %s;%n" +
+                        "    {%n" +
+                        "   var oldSeqDB = event.Records;%n" +
+                        "   if (oldSeqDB != undefined) {%n" +
+                        "      oldSeqDB = event.Records[0].dynamodb.NewImage.oldSeq.S;%n" +
+                        "    }%n" +
+                        "        var oldSeqFunctionCall = event.oldSeq;%n" +
+                        "        var sequencePassed = \"\";%n" +
+                        "        if(oldSeqDB == undefined && oldSeqFunctionCall== undefined){%n" +
+                        "            sequencePassed = \"\";%n" +
+                        "        }else if(oldSeqDB != undefined){%n" +
+                        "            sequencePassed = oldSeqDB;%n" +
+                        "        }else if(oldSeqFunctionCall != undefined){%n" +
+                        "            sequencePassed = oldSeqFunctionCall;%n" +
+                        "        }else{%n" +
+                        "            console.log(\"Error: Function is not called by DB or Lambda. Check calling resource.\");%n" +
+                        "        }%n" +
+                        "        passingParameter.Item = passingParameter.Key;%n" +
+                        "        passingParameter.Item.oldSeq = {S: sequencePassed + context.functionName +';'+ passingParameter.TableName +';'}%n" +
+                        "		 passingParameter.Item.funcDel = {S: 'true'};%n	" +
+                        "		 delete passingParameter['Key'];%n"+
+                        "    }%n" +
+                        "    console.log('%s' + passingParameter.Item.oldSeq.S);%n" +
+                        "}",
+               param, dbWriteMarker);
+        return logLine;
+    }
 
 
-	@Override
-	public String addDefOfWrites(String defVar, int line) {
-		return "";
-	}
-	
-	@Override
-	public String addDefOfReturns(String defVar, int line) {
-		return "";
-	}
+    @Override
+    public String addDefOfInvocationVar(String defVar, int line) {
+        return "";
+    }
 
 
-	@Override
-	public String addUseOfEvents(String useVar, int line) {
-		return "";
-	}
-	
-	
-	@Override
-	public String addUseOfReturn(String useVar, int line) {
-		return "";
-	}
+    @Override
+    public String addDefOfWrites(String defVar, int line) {
+        return "";
+    }
+
+    @Override
+    public String addDefOfReturns(String defVar, int line) {
+        return "";
+    }
 
 
-	@Override
-	public String addUseOfReads(String useVar, int line) {
-		return "";
-	}
-
-	
-	@Override
-	public String addCoverageStatementsReturn(String variable) {
-		return "";
-	}
+    @Override
+    public String addUseOfEvents(String useVar, int line) {
+        return "";
+    }
 
 
-	@Override
-	public void activateDeletion() {
-		
-	}
-	@Override
-	public String addDefOfDeletes(String deleteParameter, int line) {
-		return "";
-	}
-	
-	@Override
-	public boolean isDeletionInstrumentation() {
-		return false;
-	}
+    @Override
+    public String addUseOfReturn(String useVar, int line) {
+        return "";
+    }
+
+
+    @Override
+    public String addUseOfReads(String useVar, int line) {
+        String logline = "";
+        if (isDeletionInstrumentation()) {
+            logline = String.format("             {%n" + "   let definition = %s?.Item?.funcDel;%n" +
+                            "                     if(definition != undefined) {%n"
+                            + "                     	%s = {};%n" + "						}%n"
+                            + "                 }%n",
+                    useVar, useVar);
+        }
+        return logline;
+    }
+
+
+    @Override
+    public String addCoverageStatementsReturn(String variable) {
+        return "";
+    }
+
+    @Override
+    public void activateDeletion() {
+        this.deletionInstrumentation = true;
+    }
+
+    @Override
+    public String addDefOfDeletes(String deleteParameter, int line) {
+        return "";
+    }
+
+    @Override
+    public boolean isDeletionInstrumentation() {
+        return deletionInstrumentation;
+    }
+
 
 }

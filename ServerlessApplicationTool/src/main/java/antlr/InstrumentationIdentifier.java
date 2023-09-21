@@ -93,9 +93,10 @@ public class InstrumentationIdentifier<T> extends JavaScriptParserBaseVisitor<T>
 			if (GraphHelper.checkIfFunctionIsInvoked(ctx, dbDeleteFunctionName)) {
 				ArgumentContext deleteParameter = GraphHelper.getFirstArgument(ctx);
 				if (deleteParameter != null) {
-
 					if (isDeleteInstrumented()) {
 						addDefsForDelete(deleteParameter.getText());
+						String logLines = createLinesForDBDelete(deleteParameter.getText());
+						rewriter.insertBefore(ctx.start, logLines);
 						ParserRuleContext functionNode = (ParserRuleContext) GraphHelper.getFunctionExpression(ctx,
 								dbDeleteFunctionName);
 						if (functionNode != null) {
@@ -103,6 +104,10 @@ public class InstrumentationIdentifier<T> extends JavaScriptParserBaseVisitor<T>
 						} else {
 							System.err.println("Delete could not be replaced");
 						}
+					}else{
+						addDefsForWrite(deleteParameter.getText());
+						String logLines = createLinesForDBWrite(deleteParameter.getText());
+						rewriter.insertBefore(ctx.start, logLines);
 					}
 				}
 			}
@@ -254,6 +259,19 @@ public class InstrumentationIdentifier<T> extends JavaScriptParserBaseVisitor<T>
 		Comment comment = new Comment(startComment, endCommend, logLine);
 		return comment.toString();
 	}
+
+	private String createLinesForDBDelete(String writeParameter) {
+		StringBuilder result = new StringBuilder();
+		String startComment = "DB delete start";
+		for (CoverageCriterion criterion : criteria) {
+			result.append(criterion.addCoverageStatementDBisDeleted(writeParameter));
+		}
+		String endCommend = "DB delete end";
+		String logLine = result.toString();
+		Comment comment = new Comment(startComment, endCommend, logLine);
+		return comment.toString();
+	}
+
 
 	private String createLinesForDBRead(String accessParameter, String returnParameter) {
 		StringBuilder result = new StringBuilder();

@@ -35,6 +35,11 @@ public class InstrumentatorARR implements CoverageCriterion {
 	}
 
 	@Override
+	public String addCoverageStatementDBisDeleted(String param) {
+		return this.addCoverageStatementDBisWritten(param);
+	}
+
+	@Override
 	public String addDefOfInvocationVar(String defVar, int line) {
 		return "";
 	}
