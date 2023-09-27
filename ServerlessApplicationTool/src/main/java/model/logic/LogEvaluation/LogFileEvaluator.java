@@ -4,9 +4,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.stream.Collectors;
 
-import static java.util.Map.Entry.*;
+import static java.util.Map.Entry.comparingByValue;
 
 public class LogFileEvaluator {
 
@@ -32,11 +31,11 @@ public class LogFileEvaluator {
 
             for (StatementEvaluator evaluator : evaluators) {
 
-                result.append(evaluator.getCriteriaName() + System.lineSeparator());
+                result.append(evaluator.getCriteriaName()).append(System.lineSeparator());
                 Map<String, Integer> unitsCovered = evaluator.getCoveredResources();
 
                 var unitsCoveredSortedByOccurrence = unitsCovered.entrySet().stream().sorted(Collections.reverseOrder(comparingByValue()))
-                        .collect(Collectors.toList());
+                        .toList();
                 for (var entry : unitsCoveredSortedByOccurrence) {
                     result.append(String.format("%s\t%sx%n", entry.getKey(), entry.getValue()));
                 }
@@ -59,13 +58,10 @@ public class LogFileEvaluator {
 
         for (String line : lines) {
             if (line.contains("INFO")) {
-                line = line.substring(line.indexOf("INFO"));
-                String infos[] = line.split("INFO");
-                for (String info : infos) {
-                    String statement = info.split(" ")[0].trim();
-                    if (statement.startsWith("#")) {
-                        statements.add(statement);
-                    }
+                line = line.substring(line.indexOf("INFO") + "INFO".length());
+                line = line.strip();
+                if (line.startsWith("#")) {
+                    statements.add(line);
                 }
             }
         }
